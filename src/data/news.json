@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "date": "2024.04.01",
+    "category": "Press Release",
+    "title": "お坊さんアプリ「Sion」、待望のバージョンアップ！",
+    "url": "https://prtimes.jp/main/html/rd/p/000000012.000042444.html"
+  },
+  {
+    "id": 2,
+    "date": "2021.12.27",
+    "category": "Press Release",
+    "title": "今度のお坊さんは代弁!?聴くでも応えるでもない新サービス始めます。",
+    "url": "https://prtimes.jp/main/html/rd/p/000000010.000042444.html"
+  },
+  {
+    "id": 3,
+    "date": "2021.01.22",
+    "category": "Press Release",
+    "title": "チーフ・坊さん・オフィサー!?会員数1.9千人を超えたお坊さんアプリが新たな体制で挑戦します！",
+    "url": "https://prtimes.jp/main/html/rd/p/000000009.000042444.html"
+  },
+  {
+    "id": 4,
+    "date": "2020.12.08",
+    "category": "Press Release",
+    "title": "あなたのためのお坊さんアプリ「Sion（しおん）」が正式リリース！",
+    "url": "https://prtimes.jp/main/html/rd/p/000000008.000042444.html"
+  },
+  {
+    "id": 5,
+    "date": "2020.11.30",
+    "category": "Press Release",
+    "title": "お坊さんSNS、リリース予定日決定！ティザーサイトを本日公開！",
+    "url": "https://prtimes.jp/main/html/rd/p/000000007.000042444.html"
+  }
+]
