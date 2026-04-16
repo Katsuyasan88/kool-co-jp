@@ -72,18 +72,18 @@ const Service = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-20"
+          className="mb-10 md:mb-16 text-center"
         >
           <span className="text-secondary font-bold tracking-widest text-sm uppercase">Our Service</span>
-          <h1 className="text-4xl md:text-4xl font-extrabold mt-4 mb-6">事業概要</h1>
-          <p className="text-text-muted max-w-2xl mx-auto text-lg">
+          <h1 className="text-3xl md:text-5xl font-extrabold mt-2 mb-4 leading-tight">事業概要</h1>
+          <p className="text-text-muted max-w-2xl mx-auto text-base md:text-lg leading-relaxed md:leading-loose">
             SmartThanksは、テクノロジーの力で新しい循環を創り出します。<br className="hidden md:block" />
             自社開発で得た「生きた知見」を支援事業に還元し、<br className="hidden md:block" />
             クライアント様と共に成長するエコシステムを構築しています。
           </p>
         </motion.div>
 
-        <div className="space-y-12">
+        <div className="space-y-12 md:space-y-16">
           {/* Own Product - Highlighted Section */}
           <motion.div
             id="own-product"
@@ -99,17 +99,17 @@ const Service = () => {
                 <span className="px-4 py-1.5 bg-primary/20 text-primary text-xs font-bold rounded-full uppercase tracking-widest mb-6 inline-block">
                   {services[0].tag}
                 </span>
-                <h2 className="text-3xl md:text-3xl font-bold mb-8 whitespace-nowrap">
+                <h2 className="text-2xl md:text-4xl font-bold mb-4 leading-tight">
                   {services[0].title}
                 </h2>
-                <p className="text-text-muted text-lg mb-10">{services[0].desc}</p>
-                <div className="bg-white/60 backdrop-blur-sm p-8 rounded-2xl border border-white mb-8">
+                <p className="text-text-muted text-base md:text-lg mb-4 leading-relaxed md:leading-loose">{services[0].desc}</p>
+                <div className="bg-white/60 backdrop-blur-sm p-8 rounded-2xl border border-white mb-4">
                   <p className="font-bold text-primary mb-3">R&D Background</p>
                   <p className="text-sm text-text-muted italic">
                     「{services[0].highlights}」
                   </p>
                 </div>
-                <ul className="space-y-4">
+                <ul className="space-y-2">
                   {services[0].items.map((item, i) => (
                     <li key={i} className="flex items-center gap-3">
                       <div className="w-2 h-2 bg-primary rounded-full shrink-0" />
@@ -144,10 +144,10 @@ const Service = () => {
                 <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-primary mb-8">
                   {service.icon}
                 </div>
-                <h2 className="text-2xl md:text-2xl font-bold mb-6">{service.title}</h2>
-                <p className="text-text-muted mb-8 text-lg flex-grow">{service.desc}</p>
+                <h2 className="text-2xl md:text-3xl font-bold mb-4 leading-tight">{service.title}</h2>
+                <p className="text-text-muted mb-4 text-base md:text-lg flex-grow leading-relaxed md:leading-loose">{service.desc}</p>
 
-                <div className="space-y-4 mb-10 pt-8 border-t border-border">
+                <div className="space-y-2 mb-4 pt-8 border-t border-border">
                   <p className="text-xs font-bold text-primary tracking-widest uppercase">Related Records</p>
                   {service.cases?.map((c, i) => (
                     <div key={i} className="flex items-start gap-3">

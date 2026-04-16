@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Send, CheckCircle, Mail, MapPin } from 'lucide-react';
+import { Send, CheckCircle } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 
 const Contact = () => {
@@ -52,16 +52,17 @@ const Contact = () => {
   return (
     <div className="pt-32 pb-20">
       <div className="container">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-16"
+            className="text-center mb-8 md:mb-10"
           >
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-6">お問い合わせ</h1>
-            <p className="text-text-muted text-lg max-w-2xl mx-auto">
-              事業に関するご相談、サービスへのお問い合わせ、取材についてなど、
-              お気軽にご連絡ください。通常2営業日以内に担当より返信いたします。
+            <h1 className="text-3xl md:text-5xl font-extrabold mb-2 md:mb-4">Contact</h1>
+            <div className="w-12 h-1 bg-secondary mx-auto mb-4 md:mb-6 rounded-full" />
+            <p className="text-text-muted text-base md:text-lg">
+              事業に関するご相談、取材、その他お問い合わせは<br className="md:hidden" />
+              以下のフォームよりお願いいたします。
             </p>
           </motion.div>
 
@@ -89,7 +90,7 @@ const Contact = () => {
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="bg-white border border-border p-8 md:p-12 rounded-[2rem] shadow-xl relative overflow-hidden">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6">
                   <div>
                     <label className="block text-sm font-bold mb-2">お名前 <span className="text-red-500">*</span></label>
                     <input
@@ -143,7 +144,7 @@ const Contact = () => {
                 <button
                   type="submit"
                   disabled={formStatus === 'submitting'}
-                  className="btn btn-primary w-full flex items-center justify-center gap-2 h-14 text-lg"
+                  className="btn btn-primary w-full flex items-center justify-center gap-2 h-12 md:h-14 text-base md:text-lg rounded-xl md:rounded-2xl"
                 >
                   {formStatus === 'submitting' ? '送信中...' : <>メッセージを送信する <Send size={20} /></>}
                 </button>

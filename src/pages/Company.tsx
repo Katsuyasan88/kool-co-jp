@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Rocket, Heart, Award, CheckCircle } from 'lucide-react';
+import { Rocket, CheckCircle } from 'lucide-react';
 
 const Company = () => {
   const companyInfo = [
@@ -40,14 +40,14 @@ const Company = () => {
           className="max-w-5xl mx-auto"
         >
           {/* Header */}
-          <div className="text-center mb-24">
-            <span className="text-primary font-bold tracking-widest text-sm uppercase">About Us</span>
-            <h1 className="text-4xl md:text-4xl font-extrabold mt-4 mb-8">会社概要</h1>
+          <div className="text-center mb-4 md:mb-8 px-4">
+            <span className="text-primary font-bold tracking-widest text-xs md:text-sm uppercase">About Us</span>
+            <h1 className="text-3xl md:text-5xl font-extrabold mt-4 mb-6 md:mb-8 leading-tight">会社概要</h1>
             <div className="w-20 h-1.5 bg-secondary mx-auto rounded-full" />
           </div>
 
           {/* Mission & Vision Visuals */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-32">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-4 md:mb-8">
             <motion.div
               whileHover={{ y: -5 }}
               className="relative p-12 pr-16 rounded-[3rem] bg-bg-soft border border-border overflow-hidden group min-h-[320px] flex flex-col"
@@ -57,15 +57,15 @@ const Company = () => {
                 Mission
               </div>
               <div className="relative z-10">
-                <div className="flex items-center justify-between h-[80px] mb-8">
-                  <div className="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg shrink-0">
-                    <Rocket size={24} />
+                <div className="flex items-center justify-between h-[60px] md:h-[80px] mb-6 md:mb-8">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg shrink-0">
+                    <Rocket size={20} />
                   </div>
                 </div>
-                <h3 className="text-2xl md:text-xl font-black mb-6 leading-tight">
+                <h3 className="text-xl md:text-2xl font-black mb-4 md:mb-6 leading-tight">
                   テクノロジーを迅速に社会へ供給する
                 </h3>
-                <p className="text-text-muted text-base">
+                <p className="text-text-muted text-sm md:text-base leading-relaxed md:leading-loose">
                   成功だけではなく、自社で培った失敗の経験を活かして最新技術の迅速な社会実装を試みます。
                 </p>
               </div>
@@ -80,15 +80,15 @@ const Company = () => {
                 Vision
               </div>
               <div className="relative z-10">
-                <div className="flex items-center justify-between h-[80px] mb-8">
-                  <div className="w-12 h-12 bg-secondary text-primary rounded-xl flex items-center justify-center shadow-lg shrink-0">
-                    <CheckCircle size={24} />
+                <div className="flex items-center justify-between h-[60px] md:h-[80px] mb-6 md:mb-8">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-secondary text-primary rounded-xl flex items-center justify-center shadow-lg shrink-0">
+                    <CheckCircle size={20} />
                   </div>
                 </div>
-                <h3 className="text-2xl md:text-xl font-black mb-6 leading-tight">
+                <h3 className="text-xl md:text-2xl font-black mb-4 md:mb-6 leading-tight">
                   知恵と感謝が循環する社会へ
                 </h3>
-                <p className="text-text-muted text-base">
+                <p className="text-text-muted text-sm md:text-base leading-relaxed md:leading-loose">
                   テクノロジーの活用によって生まれる強い心臓で、新しい価値が循環する血の通った社会を実現します。
                 </p>
               </div>
@@ -96,23 +96,25 @@ const Company = () => {
           </div>
 
           {/* Company Table */}
-          <div className="bg-white border border-border rounded-[3rem] p-8 md:p-16 mb-32 shadow-2xl shadow-primary/5">
-            <h2 className="text-3xl font-bold mb-12 flex items-center gap-4">
+          <div className="bg-white border border-border rounded-[3rem] p-8 md:p-16 mb-4 md:mb-8 shadow-2xl shadow-primary/5">
+            <h2 className="text-2xl font-bold mb-2 md:mb-4 flex items-center gap-4">
               <span className="w-2 h-10 bg-primary rounded-full" />
               Corporate Profile
             </h2>
-            <div className="overflow-hidden">
+            <div className="overflow-hidden px-2">
               <table className="w-full text-left">
-                <tbody>
+                <tbody className="block md:table-row-group">
                   {companyInfo.map((info, idx) => (
-                    <tr key={idx} className="border-b border-border last:border-0 group">
-                      <th className="py-8 px-4 w-1/3 text-text-muted font-bold text-sm tracking-wider uppercase group-hover:text-primary transition-colors align-top">{info.label}</th>
-                      <td className="py-8 px-6 text-lg font-medium align-top">
+                    <tr key={idx} className="border-b border-border last:border-0 group flex flex-col md:table-row">
+                      <th className="py-2 md:py-4 px-4 md:w-1/3 text-text-muted font-bold text-xs md:text-sm tracking-wider uppercase group-hover:text-primary transition-colors align-top md:border-r border-border md:border-none">
+                        {info.label}
+                      </th>
+                      <td className="pb-4 md:py-4 px-4 md:px-8 text-base md:text-lg font-medium align-top leading-relaxed md:leading-loose">
                         {Array.isArray(info.value) ? (
-                          <ul className="space-y-2">
+                          <ul className="space-y-1 md:space-y-2">
                             {info.value.map((item, i) => (
                               <li key={i} className="flex items-start gap-2">
-                                <span className="text-primary mt-1.5 shrink-0">・</span>
+                                <span className="text-primary mt-1 shrink-0">・</span>
                                 <span>{item}</span>
                               </li>
                             ))}
@@ -129,9 +131,9 @@ const Company = () => {
           </div>
 
           {/* History Timeline */}
-          <div className="mb-20">
-            <h2 className="text-3xl font-bold mb-16 text-center">沿革</h2>
-            <div className="relative max-w-3xl mx-auto pl-8 border-l-2 border-border space-y-16">
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold mb-4 md:mb-8 text-center">沿革</h2>
+            <div className="relative max-w-3xl mx-auto pl-8 border-l-2 border-border space-y-8 md:space-y-12">
               {history.map((h, i) => (
                 <motion.div
                   key={i}
@@ -143,7 +145,7 @@ const Company = () => {
                 >
                   <div className="absolute -left-[41px] top-1.5 w-[18px] h-[18px] bg-white border-4 border-primary rounded-full shadow-sm" />
                   <span className="text-primary font-bold font-mono tracking-tighter mb-2 block">{h.year}</span>
-                  <p className="text-xl font-bold text-text-main leading-tight">{h.event}</p>
+                  <p className="text-base md:text-lg font-bold text-text-main leading-tight md:leading-loose">{h.event}</p>
                 </motion.div>
               ))}
             </div>

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Zap, RefreshCw, Layout, CheckCircle, User, ExternalLink } from 'lucide-react';
+import { ArrowRight, Zap, RefreshCw, CheckCircle, User, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import newsData from '../data/news.json';
 
@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <div className="home-page">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center pt-20 overflow-hidden">
+      <section className="relative min-h-[60vh] md:min-h-[90vh] flex items-center pt-24 md:pt-20 overflow-hidden">
         {/* Abstract Background Image */}
         <div
           className="absolute inset-0 z-0 opacity-10 grayscale pointer-events-none"
@@ -30,17 +30,17 @@ const Home = () => {
               transition={{ duration: 0.8 }}
             >
               <h1
-                className="text-5xl md:text-7xl font-extrabold mb-6"
-                style={{ lineHeight: '1.3' }}
+                className="text-2xl md:text-7xl font-extrabold mb-6"
+                style={{ lineHeight: '1.4' }}
               >
                 循環が生む、<br />
                 <span className="gradient-text">新しい価値のカタチ。</span>
               </h1>
-              <p className="text-xl text-text-muted mb-10 leading-relaxed max-w-2xl">
+              <p className="text-sm md:text-xl text-text-muted mb-10 leading-relaxed md:leading-loose max-w-2xl">
                 株式会社SmartThanksは、自社サービスの開発と他社様の新規事業支援を通じて、
                 知恵と感謝が循環するデジタル社会の未来を創造します。
               </p>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-3 md:gap-4">
                 <Link to="/service" className="btn btn-outline flex items-center gap-2">
                   事業内容を見る <ArrowRight size={20} />
                 </Link>
@@ -90,17 +90,19 @@ const Home = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-20"
+            className="text-center mb-5 md:mb-10"
           >
-            <h2 className="text-4xl md:text-3xl font-extrabold mb-6">Our Services</h2>
-            <div className="w-12 h-1 bg-secondary mx-auto mb-6 rounded-full" />
-            <p className="text-text-muted text-lg max-w-2xl mx-auto">
-              「自走」と「共創」の循環。私たちが提供するコア・バリューです。<br />
-              最新の技術知見と、現場主義の伴走支援を融合させました。
+            <h2 className="text-2xl md:text-4xl font-extrabold mb-2 md:mb-4 leading-tight">Our Services</h2>
+            <div className="w-12 h-1 bg-secondary mx-auto mb-4 md:mb-6 rounded-full" />
+            <p className="text-text-muted text-base md:text-lg max-w-2xl mx-auto leading-relaxed md:leading-loose">
+              「自走」と「共創」の循環。<br className="md:hidden" />
+              私たちが提供するコア・バリューです。<br />
+              最新の技術知見と<br className="md:hidden" />
+              現場主義の伴走支援を融合させました。
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               {
                 tag: "01",
@@ -131,19 +133,19 @@ const Home = () => {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
                 whileHover={{ y: -12 }}
-                className="group relative bg-[#fcfcfc] border border-border p-10 rounded-[2.5rem] hover:shadow-2xl hover:border-primary/20 transition-all duration-500 overflow-hidden flex flex-col"
+                className="group relative bg-[#fcfcfc] border border-border p-6 md:p-10 rounded-[2.5rem] hover:shadow-2xl hover:border-primary/20 transition-all duration-500 overflow-hidden flex flex-col"
               >
                 <div className="absolute top-0 right-0 p-6 text-6xl font-black text-primary/5 group-hover:text-primary/10 transition-colors">
                   {item.tag}
                 </div>
 
                 <div className="relative z-10 flex-grow flex flex-col">
-                  <div className="w-14 h-14 bg-white rounded-2xl shadow-lg border border-border flex items-center justify-center text-primary mb-8 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                  <div className="hidden md:flex w-14 h-14 bg-white rounded-2xl shadow-lg border border-border items-center justify-center text-primary mb-6 md:mb-8 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500">
                     {item.icon}
                   </div>
-                  <span className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-2 block">{item.label}</span>
-                  <h3 className="text-2xl font-bold mb-5">{item.title}</h3>
-                  <p className="text-text-muted leading-relaxed text-sm mb-8 flex-grow">{item.desc}</p>
+                  <span className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1 md:mb-2 block">{item.label}</span>
+                  <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-5">{item.title}</h3>
+                  <p className="text-text-muted leading-relaxed text-sm mb-4 md:mb-8 flex-grow">{item.desc}</p>
 
                   <Link
                     to={item.tag === "01" ? "/service#own-product" : item.tag === "02" ? "/service#producing" : "/service#mentoring"}
@@ -167,10 +169,10 @@ const Home = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-4 md:mb-8"
           >
-            <h2 className="text-4xl md:text-3xl font-extrabold mb-6">Our Achievements</h2>
-            <div className="w-12 h-1 bg-secondary mx-auto mb-6 rounded-full" />
+            <h2 className="text-2xl md:text-4xl font-extrabold mb-2 md:mb-4">Our Achievements</h2>
+            <div className="w-12 h-1 bg-secondary mx-auto mb-4 md:mb-6 rounded-full" />
 
             <p className="text-text-muted text-lg max-w-2xl mx-auto">
               守秘義務に基づき具体名は伏せておりますが、<br className="hidden md:block" />
@@ -186,16 +188,16 @@ const Home = () => {
               viewport={{ once: true }}
               className="flex items-center gap-2 text-primary font-bold bg-primary/5 px-4 py-2 rounded-full border border-primary/10"
             >
-              <span className="text-2xl">10+</span>
-              <span className="text-[10px] uppercase tracking-widest leading-tight">Successful<br />Projects</span>
+              <span className="text-lg md:text-2xl">10+</span>
+              <span className="text-[8px] md:text-[10px] uppercase tracking-widest leading-tight">Successful<br />Projects</span>
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { year: "2025", title: "大手飲料メーカー新規アプリプロトタイプ制作", tags: ["PoC Support", "Prototype Development"] },
-              { year: "2025", title: "大手自動車メーカー新規事業創出メンタリング", tags: ["Mentoring", "Business Producing"] },
-              { year: "2024", title: "AI系スタートアップ 市場調査・戦略立案支援", tags: ["Market Research", "Business Producing"] },
+              { year: "2025", title: "大手飲料アプリプロトタイプ制作", tags: ["PoC Support", "Prototype Development"] },
+              { year: "2025", title: "大手自動車新規事業創出メンタリング", tags: ["Mentoring", "Business Producing"] },
+              { year: "2024", title: "AIスタートアップ市場調査・戦略立案支援", tags: ["Market Research", "Business Producing"] },
               { year: "2023", title: "小売店向けスタンプシステム実証実験", tags: ["PoC Support", "Retail Tech"] }
             ].map((record, i) => (
               <motion.div
@@ -207,8 +209,8 @@ const Home = () => {
                 className="bg-bg-soft border border-border p-8 rounded-3xl hover:border-primary/30 transition-all flex flex-col justify-between"
               >
                 <div>
-                  <span className="inline-block px-3 py-1 bg-white border border-border rounded-full text-xs font-bold text-text-muted mb-4">{record.year}</span>
-                  <h3 className="text-xl font-bold mb-6">{record.title}</h3>
+                  <span className="inline-block px-3 py-1 bg-white border border-border rounded-full text-xs font-bold text-text-muted mb-3 md:mb-4">{record.year}</span>
+                  <h3 className="text-base md:text-xl font-bold mb-4 md:mb-6">{record.title}</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {record.tags.map(tag => (
@@ -235,13 +237,12 @@ const Home = () => {
                 <User size={16} /> Founder's Vision
               </div>
               <h2
-                className="text-4xl md:text-2xl font-bold mb-8"
-                style={{ lineHeight: '1.3' }}
+                className="text-2xl md:text-4xl font-bold mb-6 md:mb-8 leading-tight"
               >
                 「失敗」と「成功」に<br />
                 創業者がコミットする。
               </h2>
-              <div className="space-y-6 text-text-muted text-lg">
+              <div className="space-y-6 text-text-muted text-base md:text-lg leading-relaxed md:leading-loose">
                 <p>
                   私たちは少数精鋭の体制を敷いています。それは、私が全てのプロジェクトに直接深く関わり、迅速かつ柔軟に意思決定を行うためです。
                 </p>
@@ -282,15 +283,18 @@ const Home = () => {
       {/* News Summary */}
       <section className="section">
         <div className="container">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <h2 className="text-3xl md:text-4xl mb-4">News</h2>
-              <p className="text-text-muted">SmartThanksの最新情報をお届けします。</p>
-            </div>
-            <Link to="/news" className="text-primary font-bold flex items-center gap-1 hover:gap-2 transition-all">
-              すべて見る <ArrowRight size={18} />
-            </Link>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-4 md:mb-8"
+          >
+            <h2 className="text-2xl md:text-4xl font-extrabold mb-2 md:mb-4 leading-tight">News</h2>
+            <div className="w-12 h-1 bg-secondary mx-auto mb-4 md:mb-6 rounded-full" />
+            <p className="text-text-muted text-base md:text-lg max-w-2xl mx-auto leading-relaxed md:leading-loose">
+              SmartThanksの最新情報をお届けします。
+            </p>
+          </motion.div>
 
           <div className="space-y-4">
             {newsData.slice(0, 3).map((news) => {
@@ -329,12 +333,18 @@ const Home = () => {
               );
             })}
           </div>
+
+          <div className="flex justify-end mt-6 mb-4">
+            <Link to="/news" className="text-primary font-bold flex items-center gap-1 hover:gap-2 transition-all">
+              すべて見る <ArrowRight size={18} />
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* CTA Section - Redesigned with higher aesthetics */}
       <section className="section bg-white">
-        <div className="container px-4">
+        <div className="container">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -355,17 +365,18 @@ const Home = () => {
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
               >
-                <div className="inline-block px-4 py-1 bg-white/10 backdrop-blur-md rounded-full text-xs font-bold text-primary tracking-[0.3em] uppercase mb-8 border border-white/10">
+                <div className="inline-block px-4 py-1 bg-white/10 backdrop-blur-md rounded-full text-xs font-bold text-primary tracking-[0.3em] uppercase mb-6 md:mb-8 border border-white/10">
                   Join the Circle
                 </div>
-                <h2 className="text-4xl md:text-4xl font-black text-white mb-8"
-                  style={{ lineHeight: '1.3' }}>
+                <h2 className="text-2xl md:text-3xl font-black text-white mb-6 md:mb-8 leading-tight">
                   新しい循環を、<br />
                   あなたのビジネスに。
                 </h2>
-                <p className="text-l text-white/70 mb-12 leading-relaxed">
-                  サービス開発の悩みや、新規事業のアイデア。私たちは、あなたのビジョンを<br className="hidden md:block" />
-                  「感謝が循環する仕組み」へと変換する、一番のパートナーでありたい。
+                <p className="text-sm md:text-l text-white/70 mb-8 md:mb-12 leading-relaxed md:leading-loose">
+                  サービス開発の悩みや新規事業のアイデア。<br />
+                  私たちはあなたのビジョンを<br className="md:hidden" />
+                  「感謝が循環する仕組み」へと変換する、<br className="md:hidden" />
+                  一番のパートナーでありたい。
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
