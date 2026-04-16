@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
+import usePageTitle from '../hooks/usePageTitle.ts';
 import newsData from '../data/news.json';
 
 const News = () => {
+  usePageTitle("お知らせ");
+
   return (
     <div className="pt-32 pb-20 min-h-screen">
       <div className="container">

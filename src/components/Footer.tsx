@@ -68,10 +68,13 @@ const Footer = () => {
             <span className="w-1 h-1 bg-border rounded-full hidden md:block" />
             <p className="hidden md:block">Ehime, Japan</p>
           </div>
-          <div className="flex gap-8 items-center">
-            <a href="#" className="text-xs font-bold text-text-muted hover:text-primary transition-colors flex items-center gap-2">
+          <div className="flex gap-4 md:gap-8 items-center flex-wrap justify-center">
+            <Link to="/privacy" className="text-xs font-bold text-text-muted hover:text-primary transition-colors flex items-center gap-2">
               <Shield size={14} /> Privacy Policy
-            </a>
+            </Link>
+            <Link to="/legal" className="text-xs font-bold text-text-muted hover:text-primary transition-colors">
+              特定商取引法に基づく表記
+            </Link>
           </div>
         </div>
       </div>

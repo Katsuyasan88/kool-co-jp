@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import { Rocket, CheckCircle } from 'lucide-react';
+import usePageTitle from '../hooks/usePageTitle.ts';
 
 const Company = () => {
+  usePageTitle("会社概要");
   const companyInfo = [
     { label: "社名", value: "株式会社SmartThanks" },
     { label: "設立", value: "2019年2月" },
@@ -62,8 +64,8 @@ const Company = () => {
                     <Rocket size={20} />
                   </div>
                 </div>
-                <h3 className="text-xl md:text-2xl font-black mb-4 md:mb-6 leading-tight">
-                  テクノロジーを迅速に社会へ供給する
+                <h3 className="text-lg md:text-2xl font-black mb-4 md:mb-6 leading-tight">
+                  テクノロジーを社会へ供給する
                 </h3>
                 <p className="text-text-muted text-sm md:text-base leading-relaxed md:leading-loose">
                   成功だけではなく、自社で培った失敗の経験を活かして最新技術の迅速な社会実装を試みます。
@@ -85,7 +87,7 @@ const Company = () => {
                     <CheckCircle size={20} />
                   </div>
                 </div>
-                <h3 className="text-xl md:text-2xl font-black mb-4 md:mb-6 leading-tight">
+                <h3 className="text-lg md:text-2xl font-black mb-4 md:mb-6 leading-tight">
                   知恵と感謝が循環する社会へ
                 </h3>
                 <p className="text-text-muted text-sm md:text-base leading-relaxed md:leading-loose">

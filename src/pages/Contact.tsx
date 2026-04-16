@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Send, CheckCircle } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+import usePageTitle from '../hooks/usePageTitle.ts';
 
 const Contact = () => {
+  usePageTitle("お問い合わせ");
   const [searchParams] = useSearchParams();
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [selectedItem, setSelectedItem] = useState('事業・サービスについて');

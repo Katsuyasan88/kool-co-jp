@@ -13,6 +13,7 @@
     @apply bg-white text-text-main antialiased overflow-x-hidden;
     color: #393939; /* Explicitly set the softer black */
     line-height: 1.8;
+    overscroll-behavior-y: none; /* 下に引っ張って更新を無効化 */
   }
 }
 

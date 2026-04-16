@@ -1,0 +1,28 @@
+{
+    "Changes": [
+        {
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+                "Name": "smartthanks.world",
+                "Type": "A",
+                "AliasTarget": {
+                    "HostedZoneId": "Z2FDTNDATAQYW2",
+                    "DNSName": "d899ij03cpeva.cloudfront.net",
+                    "EvaluateTargetHealth": false
+                }
+            }
+        },
+        {
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+                "Name": "www.smartthanks.world",
+                "Type": "A",
+                "AliasTarget": {
+                    "HostedZoneId": "Z2FDTNDATAQYW2",
+                    "DNSName": "d899ij03cpeva.cloudfront.net",
+                    "EvaluateTargetHealth": false
+                }
+            }
+        }
+    ]
+}

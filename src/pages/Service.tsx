@@ -2,8 +2,10 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Smartphone, Globe, Users, ArrowRight } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import usePageTitle from '../hooks/usePageTitle.ts';
 
 const Service = () => {
+  usePageTitle("事業内容");
   const { hash } = useLocation();
 
   useEffect(() => {
@@ -29,7 +31,7 @@ const Service = () => {
       desc: "「迅速な挑戦と失敗」をテーマに、ノーコード・AI駆動開発を中心とした独創的な自社サービスを展開。これまでの全開発プロジェクトは現在の技術基盤の礎となっています。",
       icon: <Smartphone className="w-8 h-8" />,
       items: [
-        "LINEスタンプのAI生成サービス（開発中）",
+        "AI生成のLINEミニアプリ（開発中）",
         "AI絵本の読み聞かせプラットフォーム",
         "感謝を伝えるWebサービス",
         "お坊さんだけが返信できるSNSアプリ"
@@ -118,7 +120,7 @@ const Service = () => {
                   ))}
                 </ul>
                 <Link to="/contact?type=own-product" className="btn btn-outline w-full text-center lg:w-fit px-12 mt-8">
-                  この事業について問い合わせる
+                  <span className="hidden md:inline">この事業について</span>問い合わせる
                 </Link>
               </div>
               <div className="flex-1 w-full flex justify-center">
@@ -158,7 +160,7 @@ const Service = () => {
                 </div>
 
                 <Link to={`/contact?type=${service.query}`} className="btn btn-outline w-full text-center">
-                  この事業について問い合わせる
+                  <span className="hidden md:inline">この事業について</span>問い合わせる
                 </Link>
               </motion.div>
             ))}

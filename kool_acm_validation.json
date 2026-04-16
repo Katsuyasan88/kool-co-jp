@@ -1,0 +1,17 @@
+{
+    "Changes": [
+        {
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+                "Name": "_3db4652e3a6752d7e6a506d7a213cb65.kool.co.jp.",
+                "Type": "CNAME",
+                "TTL": 300,
+                "ResourceRecords": [
+                    {
+                        "Value": "_1910231ef217fecabe00254b8e461d60.jkddzztszm.acm-validations.aws."
+                    }
+                ]
+            }
+        }
+    ]
+}

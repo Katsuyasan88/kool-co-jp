@@ -1,0 +1,80 @@
+{
+    "CallerReference": "kool-co-jp-web-prod",
+    "Aliases": {
+        "Quantity": 2,
+        "Items": [
+            "smartthanks.world",
+            "www.smartthanks.world"
+        ]
+    },
+    "DefaultRootObject": "index.html",
+    "Origins": {
+        "Quantity": 1,
+        "Items": [
+            {
+                "Id": "S3-kool-co-jp-web",
+                "DomainName": "kool-co-jp-web.s3.ap-northeast-1.amazonaws.com",
+                "S3OriginConfig": {
+                    "OriginAccessIdentity": ""
+                },
+                "OriginAccessControlId": "E2YPSVJ6HYDSCQ"
+            }
+        ]
+    },
+    "DefaultCacheBehavior": {
+        "TargetOriginId": "S3-kool-co-jp-web",
+        "ForwardedValues": {
+            "QueryString": false,
+            "Cookies": {
+                "Forward": "none"
+            }
+        },
+        "TrustedSigners": {
+            "Enabled": false,
+            "Quantity": 0
+        },
+        "ViewerProtocolPolicy": "redirect-to-https",
+        "MinTTL": 0,
+        "AllowedMethods": {
+            "Quantity": 2,
+            "Items": [
+                "GET",
+                "HEAD"
+            ],
+            "CachedMethods": {
+                "Quantity": 2,
+                "Items": [
+                    "GET",
+                    "HEAD"
+                ]
+            }
+        }
+    },
+    "CacheBehaviors": {
+        "Quantity": 0
+    },
+    "Comment": "Main distribution for smartthanks.world",
+    "Enabled": true,
+    "ViewerCertificate": {
+        "ACMCertificateArn": "arn:aws:acm:us-east-1:778960006083:certificate/956e96b7-24cb-400a-b76b-72ca01d06507",
+        "SSLSupportMethod": "sni-only",
+        "MinimumProtocolVersion": "TLSv1.2_2021"
+    },
+    "CustomErrorResponses": {
+        "Quantity": 2,
+        "Items": [
+            {
+                "ErrorCode": 403,
+                "ResponsePagePath": "/index.html",
+                "ResponseCode": "200",
+                "ErrorCachingMinTTL": 10
+            },
+            {
+                "ErrorCode": 404,
+                "ResponsePagePath": "/index.html",
+                "ResponseCode": "200",
+                "ErrorCachingMinTTL": 10
+            }
+        ]
+    }
+}

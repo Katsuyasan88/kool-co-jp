@@ -1,0 +1,81 @@
+{
+    "CallerReference": "kool-co-jp-redirect-prod",
+    "Aliases": {
+        "Quantity": 2,
+        "Items": [
+            "kool.co.jp",
+            "www.kool.co.jp"
+        ]
+    },
+    "DefaultRootObject": "",
+    "Origins": {
+        "Quantity": 1,
+        "Items": [
+            {
+                "Id": "DummyOrigin",
+                "DomainName": "kool-co-jp-web.s3.ap-northeast-1.amazonaws.com",
+                "S3OriginConfig": {
+                    "OriginAccessIdentity": ""
+                },
+                "OriginAccessControlId": "E2YPSVJ6HYDSCQ"
+            }
+        ]
+    },
+    "DefaultCacheBehavior": {
+        "TargetOriginId": "DummyOrigin",
+        "ForwardedValues": {
+            "QueryString": false,
+            "Cookies": {
+                "Forward": "none"
+            }
+        },
+        "TrustedSigners": {
+            "Enabled": false,
+            "Quantity": 0
+        },
+        "ViewerProtocolPolicy": "redirect-to-https",
+        "MinTTL": 0,
+        "AllowedMethods": {
+            "Quantity": 2,
+            "Items": [
+                "GET",
+                "HEAD"
+            ],
+            "CachedMethods": {
+                "Quantity": 2,
+                "Items": [
+                    "GET",
+                    "HEAD"
+                ]
+            }
+        },
+        "FunctionAssociations": {
+            "Quantity": 1,
+            "Items": [
+                {
+                    "FunctionARN": "arn:aws:cloudfront::778960006083:function/RedirectKoolToSmartThanks",
+                    "EventType": "viewer-request"
+                }
+            ]
+        }
+    },
+    "CacheBehaviors": {
+        "Quantity": 0
+    },
+    "Comment": "Redirect distribution for kool.co.jp (Japan Only)",
+    "Enabled": true,
+    "ViewerCertificate": {
+        "ACMCertificateArn": "arn:aws:acm:us-east-1:778960006083:certificate/25048968-1582-44e0-b0d7-40d44495c9de",
+        "SSLSupportMethod": "sni-only",
+        "MinimumProtocolVersion": "TLSv1.2_2021"
+    },
+    "Restrictions": {
+        "GeoRestriction": {
+            "RestrictionType": "whitelist",
+            "Quantity": 1,
+            "Items": [
+                "JP"
+            ]
+        }
+    }
+}
