@@ -150,6 +150,12 @@ const Contact = () => {
                 >
                   {formStatus === 'submitting' ? '送信中...' : <>メッセージを送信する <Send size={20} /></>}
                 </button>
+
+                {formStatus === 'error' && (
+                  <p className="mt-4 text-sm text-red-600 text-center font-medium">
+                    送信に失敗しました。しばらくしてから再度お試しください。
+                  </p>
+                )}
               </form>
             )}
           </div>

@@ -12,7 +12,7 @@ const Footer = () => {
           {/* Brand Info */}
           <div className="col-span-2 lg:col-span-5">
             <Link to="/" className="flex items-center gap-3 mb-4">
-              <img src="/logo.png" alt="SmartThanks Logo" className="w-10 h-10 object-contain" />
+              <img src="/logo.webp" alt="SmartThanks Logo" className="w-10 h-10 object-contain" />
               <span className="text-2xl font-bold tracking-tighter">SmartThanks</span>
             </Link>
             <p className="text-text-muted text-sm md:text-base leading-relaxed md:leading-loose max-w-md mb-4">

@@ -1,28 +1,29 @@
 {
-    "Changes": [
-        {
-            "Action": "UPSERT",
-            "ResourceRecordSet": {
-                "Name": "smartthanks.world",
-                "Type": "A",
-                "AliasTarget": {
-                    "HostedZoneId": "Z2FDTNDATAQYW2",
-                    "DNSName": "d899ij03cpeva.cloudfront.net",
-                    "EvaluateTargetHealth": false
-                }
-            }
-        },
-        {
-            "Action": "UPSERT",
-            "ResourceRecordSet": {
-                "Name": "www.smartthanks.world",
-                "Type": "A",
-                "AliasTarget": {
-                    "HostedZoneId": "Z2FDTNDATAQYW2",
-                    "DNSName": "d899ij03cpeva.cloudfront.net",
-                    "EvaluateTargetHealth": false
-                }
-            }
+  "Comment": "Point kool.co.jp and www to new CloudFront redirect distribution",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "kool.co.jp.",
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": "Z2FDTNDATAQYW2",
+          "DNSName": "d7y2eke5m8v50.cloudfront.net.",
+          "EvaluateTargetHealth": false
         }
-    ]
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "www.kool.co.jp.",
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": "Z2FDTNDATAQYW2",
+          "DNSName": "d7y2eke5m8v50.cloudfront.net.",
+          "EvaluateTargetHealth": false
+        }
+      }
+    }
+  ]
 }

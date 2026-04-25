@@ -32,7 +32,7 @@ const Navbar = () => {
     <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'glass-effect py-2 md:py-3 shadow-md' : 'py-4 md:py-6'}`}>
       <div className="container flex items-center justify-between">
         <Link to="/" className="text-xl md:text-2xl font-bold flex items-center gap-2 md:gap-3">
-          <img src="/logo.png" alt="SmartThanks Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
+          <img src="/logo.webp" alt="SmartThanks Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
           <span className="gradient-text">SmartThanks</span>
         </Link>
 
@@ -53,7 +53,12 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Toggle */}
-        <button className="md:hidden text-text-main" onClick={() => setIsOpen(!isOpen)}>
+        <button 
+          className="md:hidden text-text-main" 
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? "メニューを閉じる" : "メニューを開く"}
+          aria-expanded={isOpen}
+        >
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>

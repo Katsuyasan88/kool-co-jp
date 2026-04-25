@@ -13,6 +13,7 @@ const Service = lazy(() => import('./pages/Service.tsx'));
 const Contact = lazy(() => import('./pages/Contact.tsx'));
 const Privacy = lazy(() => import('./pages/Privacy.tsx'));
 const Legal = lazy(() => import('./pages/Legal.tsx'));
+const NotFound = lazy(() => import('./pages/NotFound.tsx'));
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/legal" element={<Legal />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </main>

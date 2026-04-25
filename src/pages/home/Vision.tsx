@@ -46,10 +46,10 @@ const Vision = () => {
             viewport={{ once: true }}
             className="order-1 lg:order-2"
           >
-            <div className="relative">
+            <div className="relative hidden md:block">
               <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full" />
               <img
-                src="/founder.png"
+                src="/founder.webp"
                 alt="Founder Abstract Vision"
                 className="relative z-10 w-full max-w-md mx-auto rounded-[3rem] shadow-2xl grayscale hover:grayscale-0 transition-all duration-700"
                 loading="lazy"
