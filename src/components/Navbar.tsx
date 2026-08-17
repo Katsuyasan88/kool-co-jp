@@ -16,11 +16,6 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close menu on route change
-  useEffect(() => {
-    setIsOpen(false);
-  }, [location]);
-
   const navLinks = [
     { name: 'ホーム', path: '/' },
     { name: '事業内容', path: '/service' },
@@ -87,12 +82,13 @@ const Navbar = () => {
                   <Link
                     key={link.path}
                     to={link.path}
+                    onClick={() => setIsOpen(false)}
                     className={`text-lg font-bold p-3 rounded-2xl transition-all ${location.pathname === link.path ? 'bg-primary/10 text-primary pl-6' : 'text-text-main border border-transparent hover:bg-bg-soft'}`}
                   >
                     {link.name}
                   </Link>
                 ))}
-                <Link to="/contact" className="btn btn-primary text-center mt-4 py-4 rounded-2xl shadow-lg">
+                <Link to="/contact" onClick={() => setIsOpen(false)} className="btn btn-primary text-center mt-4 py-4 rounded-2xl shadow-lg">
                   お問い合わせ
                 </Link>
               </div>
