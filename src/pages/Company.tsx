@@ -7,7 +7,7 @@ const Company = () => {
   const companyInfo = [
     { label: "社名", value: "株式会社SmartThanks" },
     { label: "設立", value: "2019年2月" },
-    { label: "所在地", value: "〒791-8042 愛媛県松山市" },
+    { label: "所在地", value: "〒277-0871 千葉県柏市若柴178-4 柏の葉キャンパス148街区2 ショップ&オフィス棟6F" },
     {
       label: "事業内容", value: [
         "インターネットサービス企画・開発・運営",

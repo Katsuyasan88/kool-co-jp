@@ -53,7 +53,11 @@ const Footer = () => {
                 </div>
                 <div className="text-sm">
                   <p className="font-bold mb-1">本社所在地</p>
-                  <p className="text-text-muted leading-relaxed">〒791-8042 愛媛県松山市</p>
+                  <p className="text-text-muted leading-relaxed">
+                    〒277-0871 千葉県柏市若柴178-4<br />
+                    柏の葉キャンパス148街区2<br />
+                    ショップ&オフィス棟6F
+                  </p>
                 </div>
               </div>
             </div>
@@ -66,7 +70,7 @@ const Footer = () => {
           <div className="flex items-center gap-6 text-xs font-bold text-text-muted uppercase tracking-widest">
             <p>© {currentYear} SmartThanks Inc.</p>
             <span className="w-1 h-1 bg-border rounded-full hidden md:block" />
-            <p className="hidden md:block">Ehime, Japan</p>
+            <p className="hidden md:block">Chiba, Japan</p>
           </div>
           <div className="flex gap-4 md:gap-8 items-center flex-wrap justify-center">
             <Link to="/privacy" className="text-xs font-bold text-text-muted hover:text-primary transition-colors flex items-center gap-2">
