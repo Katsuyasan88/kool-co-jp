@@ -207,10 +207,17 @@ const Contact = () => {
                 </a>{' '}
                 で受け付けています。
               </p>
+              <p className="text-sm md:text-base leading-relaxed mb-3">
+                データの削除は、アプリの三本メニューから次の2つの操作をご利用いただけます。
+              </p>
               <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-text-muted leading-relaxed">
-                <li>アプリ内のデータを削除するには、アプリの三本メニュー →「データリセット」を実行してください。</li>
-                <li>データリセットは取り消せません。実行前に内容をご確認ください。</li>
-                <li>現行のデータリセットでは、匿名アカウントとAI解析履歴は削除されずに残ります。</li>
+                <li>
+                  <span className="font-bold text-text-main">データリセット</span>: ガチャ帳、所持数、思い出メモ、保存画像を削除します。匿名アカウントとAI解析の利用履歴は残ります。
+                </li>
+                <li>
+                  <span className="font-bold text-text-main">アカウントを削除</span>: 匿名アカウントと関連するデータをすべて削除します。
+                </li>
+                <li>いずれの操作も取り消せません。削除したデータは復元できませんので、実行前に内容をご確認ください。</li>
                 <li>
                   データの取扱いの詳細は{' '}
                   <Link to="/privacy#gachacho" className="text-primary underline hover:text-primary-dark">
