@@ -4,6 +4,7 @@ import Navbar from './components/Navbar.tsx';
 import Footer from './components/Footer.tsx';
 import ScrollToTop from './components/ScrollToTop.tsx';
 import Loading from './components/Loading.tsx';
+import ErrorBoundary from './components/ErrorBoundary.tsx';
 
 // Lazy load pages for better performance
 const Home = lazy(() => import('./pages/Home.tsx'));
@@ -13,6 +14,7 @@ const Service = lazy(() => import('./pages/Service.tsx'));
 const Contact = lazy(() => import('./pages/Contact.tsx'));
 const Privacy = lazy(() => import('./pages/Privacy.tsx'));
 const Legal = lazy(() => import('./pages/Legal.tsx'));
+const NotFound = lazy(() => import('./pages/NotFound.tsx'));
 
 function App() {
   return (
@@ -21,17 +23,20 @@ function App() {
       <div className="app-shell">
         <Navbar />
         <main>
-          <Suspense fallback={<Loading />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/company" element={<Company />} />
-              <Route path="/news" element={<News />} />
-              <Route path="/service" element={<Service />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/legal" element={<Legal />} />
-            </Routes>
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<Loading />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/company" element={<Company />} />
+                <Route path="/news" element={<News />} />
+                <Route path="/service" element={<Service />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/legal" element={<Legal />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
         </main>
         <Footer />
       </div>

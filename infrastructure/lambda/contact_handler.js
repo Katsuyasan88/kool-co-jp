@@ -1,7 +1,7 @@
 /**
  * 株式会社SmartThanks お問い合わせ送信 Lambda関数
- * 
- * 役割: 
+ *
+ * 役割:
  * 1. API Gatewayからお問い合わせ内容を受け取る
  * 2. 入力内容のバリデーション
  * 3. Slack Webhookを介してSlackチャンネルに通知
@@ -9,17 +9,33 @@
 
 const https = require('https');
 
-exports.handler = async (event) => {
-  console.log('Event:', JSON.stringify(event));
+const ALLOWED_ORIGINS = [
+  'https://smartthanks.world',
+  'https://www.smartthanks.world',
+];
 
-  // CORS設定（Preflight/POST用）
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const LIMITS = {
+  name: 100,
+  email: 254,
+  item: 200,
+  message: 5000,
+};
+
+exports.handler = async (event) => {
+  console.log('Request:', event.httpMethod, event.path);
+
+  const origin = event.headers?.origin ?? '';
+  const allowOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+
   const headers = {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowOrigin,
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'OPTIONS,POST'
+    'Access-Control-Allow-Methods': 'OPTIONS,POST',
+    'Vary': 'Origin',
   };
 
-  // Preflight (OPTIONS) リクエストへの対応
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers, body: '' };
   }
@@ -28,7 +44,7 @@ exports.handler = async (event) => {
     const data = JSON.parse(event.body);
     const { name, email, item, message } = data;
 
-    // バリデーション
+    // 必須項目チェック
     if (!name || !email || !message) {
       return {
         statusCode: 400,
@@ -37,35 +53,53 @@ exports.handler = async (event) => {
       };
     }
 
-    // Slackへのメッセージ組み立て
+    // メール形式チェック
+    if (!EMAIL_REGEX.test(email)) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ message: 'メールアドレスの形式が正しくありません。' })
+      };
+    }
+
+    // 入力長チェック
+    if (
+      name.length > LIMITS.name ||
+      email.length > LIMITS.email ||
+      (item && item.length > LIMITS.item) ||
+      message.length > LIMITS.message
+    ) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ message: '入力内容が長すぎます。' })
+      };
+    }
+
     const slackMessage = {
       text: `🔔 *新しいお問い合わせが届きました (smartthanks.world)*`,
       attachments: [
         {
-          color: "#F59E0B", // SmartThanks Orange
+          color: '#F59E0B',
           fields: [
-            { title: "お名前", value: name, short: true },
-            { title: "メールアドレス", value: email, short: true },
-            { title: "お問い合わせ項目", value: item, short: false },
-            { title: "メッセージ", value: message, short: false }
+            { title: 'お名前', value: name, short: true },
+            { title: 'メールアドレス', value: email, short: true },
+            { title: 'お問い合わせ項目', value: item ?? '（未選択）', short: false },
+            { title: 'メッセージ', value: message, short: false }
           ],
-          footer: "SmartThanks Contact Bot",
+          footer: 'SmartThanks Contact Bot',
           ts: Math.floor(Date.now() / 1000)
         }
       ]
     };
 
-    console.log('Sending to Slack:', JSON.stringify(slackMessage));
-
-    // Slack Webhook URL (環境変数から取得することを推奨)
     const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
-    
+
     if (!SLACK_WEBHOOK_URL) {
       throw new Error('SLACK_WEBHOOK_URL is not set');
     }
 
-    const slackResponse = await postToSlack(SLACK_WEBHOOK_URL, slackMessage);
-    console.log('Slack Response:', slackResponse);
+    await postToSlack(SLACK_WEBHOOK_URL, slackMessage);
 
     return {
       statusCode: 200,
@@ -74,18 +108,15 @@ exports.handler = async (event) => {
     };
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error processing contact form:', error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ message: 'サーバーエラーが発生しました。', error: error.message })
+      body: JSON.stringify({ message: 'サーバーエラーが発生しました。' })
     };
   }
 };
 
-/**
- * SlackへPOSTリクエストを送信するヘルパー関数
- */
 function postToSlack(url, message) {
   return new Promise((resolve, reject) => {
     const data = JSON.stringify(message);
@@ -104,7 +135,7 @@ function postToSlack(url, message) {
         if (res.statusCode < 400) {
           resolve(responseBody);
         } else {
-          reject(new Error(`Slack request failed with status ${res.statusCode}: ${responseBody}`));
+          reject(new Error(`Slack request failed with status ${res.statusCode}`));
         }
       });
     });

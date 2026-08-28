@@ -1,5 +1,10 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import usePageTitle from '../hooks/usePageTitle.ts';
+
+const LAST_UPDATED = '2026年8月28日';
+
+const SUPPORT_EMAIL = 'support_smartthanks@kool.co.jp';
 
 const Privacy = () => {
   usePageTitle("プライバシーポリシー");
@@ -13,7 +18,8 @@ const Privacy = () => {
         >
           <div className="text-center mb-12">
             <span className="text-primary font-bold tracking-widest text-sm uppercase">Legal</span>
-            <h1 className="text-3xl md:text-5xl font-extrabold mt-4 mb-8">プライバシーポリシー</h1>
+            <h1 className="text-3xl md:text-5xl font-extrabold mt-4 mb-4">プライバシーポリシー</h1>
+            <p className="text-sm text-text-muted mb-8">最終更新日: {LAST_UPDATED}</p>
             <div className="w-20 h-1 bg-secondary mx-auto rounded-full" />
           </div>
 
@@ -21,6 +27,9 @@ const Privacy = () => {
             <section>
               <p>
                 株式会社SmartThanks（以下「当社」といいます。）は、当社が提供するサービス（以下「本サービス」といいます。）における、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下「本ポリシー」といいます。）を定めます。
+              </p>
+              <p className="mt-4">
+                本ポリシーは会社共通の方針を定めるものです。個別のサービスにおける情報の取扱いに固有の定めがある場合は、本ページ内に当該サービスに関する項を設けて定めます。
               </p>
             </section>
 
@@ -46,7 +55,7 @@ const Privacy = () => {
                 <li>ユーザーからのお問い合わせに回答するため（本人確認を行うことを含む）</li>
                 <li>ユーザーが利用中のサービスの新機能、更新情報、キャンペーン等及び当社が提供する他のサービスの案内のメールを送付するため</li>
                 <li>メンテナンス、重要なお知らせなど必要に応じたご連絡のため</li>
-                <li>利用規約に違反したユーザーや、不正・不当な目的でサービスを利用しようとするユーザーの特定をお断りするため</li>
+                <li>利用規約に違反したユーザーや、不正・不当な目的でサービスを利用しようとするユーザーを特定し、ご利用をお断りするため</li>
                 <li>ユーザーにご自身の登録情報の閲覧や変更、削除、ご利用状況の閲覧を行っていただくため</li>
                 <li>有料サービスにおいて、ユーザーに利用料金を請求するため</li>
                 <li>上記の利用目的に付随する目的</li>
@@ -88,7 +97,138 @@ const Privacy = () => {
 
             <section>
               <h2 className="text-xl md:text-2xl font-bold mb-4 border-l-4 border-primary pl-4">8. お問い合わせ窓口</h2>
-              <p>本ポリシーに関するお問い合わせは、お問い合わせフォームよりお願いいたします。</p>
+              <p>
+                本ポリシーに関するお問い合わせは、
+                <Link to="/contact" className="text-primary underline hover:text-primary-dark">お問い合わせフォーム</Link>
+                または下記メールアドレスまでお願いいたします。
+              </p>
+              <p className="mt-4">
+                メールアドレス:{' '}
+                <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary underline hover:text-primary-dark break-all">
+                  {SUPPORT_EMAIL}
+                </a>
+              </p>
+            </section>
+
+            <section id="gachacho" className="scroll-mt-28">
+              <h2 className="text-xl md:text-2xl font-bold mb-4 border-l-4 border-primary pl-4">9. ガチャちょうに関する個別の取扱い</h2>
+
+              <h3 className="text-lg md:text-xl font-bold mt-6 mb-3">9.1 対象サービス</h3>
+              <p>
+                「ガチャちょう」は、カプセルトイの台紙写真をAIで読み取り、ユーザー個人のコレクションを記録・管理するアプリです。本項は、ガチャちょうにおける情報の取扱いを定めるものであり、会社共通のプライバシーポリシーとあわせて適用されます。
+              </p>
+
+              <h3 className="text-lg md:text-xl font-bold mt-6 mb-3">9.2 取得・処理する情報</h3>
+              <p>ガチャちょうでは、サービス提供のために次の情報を取得または処理します。</p>
+              <ul className="list-disc pl-6 space-y-2 mt-4">
+                <li>Firebase Authenticationが発行する匿名アカウント識別子</li>
+                <li>ユーザーが撮影または選択したカプセルトイの台紙画像</li>
+                <li>AI解析結果およびユーザーが編集した商品名、メーカー・シリーズ名、価格、種類数、アイテム名、切り抜き画像</li>
+                <li>コレクション記録（アイテムの所持数）</li>
+                <li>思い出メモ（ユーザーが入力した日付、場所、メモ本文）</li>
+                <li>AI解析の利用履歴（実行日時、使用モデル、成否、処理時間、検出件数、トークン使用量等）</li>
+                <li>問い合わせ時にユーザーが入力した氏名、メールアドレス、問い合わせ内容</li>
+              </ul>
+              <p className="mt-4">
+                ガチャちょうは、アプリの利用にあたり氏名、メールアドレス、電話番号、GPSによる位置情報の登録を求めません。思い出メモの場所欄は、ユーザーが任意で入力するテキストです。
+              </p>
+
+              <h3 className="text-lg md:text-xl font-bold mt-6 mb-3">9.3 利用目的</h3>
+              <ul className="list-disc pl-6 space-y-2 mt-4">
+                <li>匿名認証とユーザーごとのデータ分離</li>
+                <li>台紙画像のAI解析、切り抜き、ガチャ帳の作成・表示</li>
+                <li>コレクションと思い出メモの保存・同期</li>
+                <li>AI解析回数の制御、不正利用防止、障害調査</li>
+                <li>AI解析の品質、成功率、処理時間、利用コストの把握</li>
+                <li>問い合わせへの対応</li>
+                <li>法令・利用規約への対応</li>
+              </ul>
+
+              <h3 className="text-lg md:text-xl font-bold mt-6 mb-3">9.4 外部サービスへの送信</h3>
+              <div className="overflow-x-auto mt-4">
+                <table className="w-full min-w-[560px] text-sm md:text-base border-collapse">
+                  <thead>
+                    <tr className="bg-bg-soft">
+                      <th className="border border-border px-4 py-3 text-left font-bold">外部サービス</th>
+                      <th className="border border-border px-4 py-3 text-left font-bold">主な送信・保存内容</th>
+                      <th className="border border-border px-4 py-3 text-left font-bold">利用目的</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border border-border px-4 py-3">OpenAI</td>
+                      <td className="border border-border px-4 py-3">AI解析を実行する台紙画像</td>
+                      <td className="border border-border px-4 py-3">商品情報・アイテム情報・切り抜き候補の解析</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-border px-4 py-3">Google Firebase</td>
+                      <td className="border border-border px-4 py-3">匿名アカウント識別子、ガチャ帳、所持数、思い出メモ、AI解析利用履歴</td>
+                      <td className="border border-border px-4 py-3">認証、データ保存、利用回数管理</td>
+                    </tr>
+                    <tr>
+                      <td className="border border-border px-4 py-3">Amazon Web Services</td>
+                      <td className="border border-border px-4 py-3">API処理対象の画像、保存確定した台紙画像・切り抜き画像</td>
+                      <td className="border border-border px-4 py-3">AI解析APIの実行、画像処理、画像保存・配信</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-4">
+                当社は、各外部サービスをその利用規約およびプライバシーに関する条件に基づいて利用します。収集した情報を広告目的で販売することはありません。
+              </p>
+
+              <h3 className="text-lg md:text-xl font-bold mt-6 mb-3">9.5 端末内の一時画像とクラウド保存</h3>
+              <p>
+                AI解析と保存前の切り抜き調整に使用する作業画像は、追加フロー中に端末内で一時的に保持され、保存成功またはフロー終了後に破棄されます。AI解析時には台紙画像をOpenAIへ送信しますが、この時点ではAmazon S3へ永続保存しません。「ガチャ帳に保存する」を実行した場合に限り、保存確定した台紙画像と切り抜き画像をAmazon S3へ保存します。
+              </p>
+              <p className="mt-4">
+                Amazon S3へ保存した画像は非公開の状態で管理しており、公開読み取りを許可していません。画像の表示は、認証済みのご本人に対して発行する有効期限の短い署名付きURLを通じてのみ行われ、署名のないURLではアクセスできません。
+              </p>
+
+              <h3 className="text-lg md:text-xl font-bold mt-6 mb-3">9.6 保存期間</h3>
+              <p>
+                ガチャ帳、所持数、思い出メモおよび保存画像は、ユーザーが削除操作を行うか、当社がサービス提供上不要と判断するまで保持します。AI解析の利用履歴は、解析回数の制御、不正利用防止、品質・コスト把握のため保持します。具体的な保持期間を定めた場合は、本ページで公表します。
+              </p>
+              <p className="mt-4">
+                ガチャ帳を1冊だけ削除した場合、対応する画像がサーバー上に残ることがあります。アプリの「データリセット」および「アカウントを削除」を実行した場合の削除・保持の対象は、9.7に定めるとおりです。
+              </p>
+
+              <h3 className="text-lg md:text-xl font-bold mt-6 mb-3">9.7 データの削除</h3>
+              <p>
+                ガチャちょうでは、アプリの三本メニューから「データリセット」と「アカウントを削除」の2つの操作をご利用いただけます。それぞれ削除の範囲が異なります。
+              </p>
+              <h4 className="text-base md:text-lg font-bold mt-4 mb-2">データリセット</h4>
+              <p>
+                すべてのガチャ帳、所持数、思い出メモおよびユーザーごとの保存画像を削除します。データリセットを実行した後も、匿名アカウント識別子、AI解析回数の管理情報およびAI解析の利用履歴は、不正利用防止とサービス運用のため保持されます。
+              </p>
+              <h4 className="text-base md:text-lg font-bold mt-4 mb-2">アカウントを削除</h4>
+              <p>
+                匿名アカウント識別子、ガチャ帳、所持数、思い出メモ、保存画像、AI解析回数の管理情報およびAI解析の利用履歴を削除します。
+              </p>
+              <p className="mt-4">
+                いずれの操作も取り消すことはできません。削除したデータは復元できませんので、実行前に内容をご確認ください。
+              </p>
+              <p className="mt-4">
+                データの取扱いまたは削除に関するお問い合わせは、
+                <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary underline hover:text-primary-dark break-all">
+                  {SUPPORT_EMAIL}
+                </a>
+                までご連絡ください。
+              </p>
+
+              <h3 className="text-lg md:text-xl font-bold mt-6 mb-3">9.8 第三者の権利を含む画像</h3>
+              <p>
+                ユーザーは、法令または権利者の許諾により利用できる画像のみを送信してください。台紙、商品画像、キャラクター、ロゴ等の権利は各権利者に帰属します。当社は、ガチャちょうの提供に必要な範囲で、ユーザーが送信した画像を解析、切り抜き、保存および表示します。
+              </p>
+              <p className="mt-4">
+                権利侵害に関するご連絡は、対象となる内容、権利者との関係、確認可能な資料および連絡先を添えて、
+                <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary underline hover:text-primary-dark break-all">
+                  {SUPPORT_EMAIL}
+                </a>
+                までお送りください。
+                <Link to="/contact" className="text-primary underline hover:text-primary-dark">お問い合わせフォーム</Link>
+                からもご連絡いただけます。
+              </p>
             </section>
           </div>
         </motion.div>

@@ -1,36 +1,39 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="icon" type="image/webp" href="/logo.webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>kool-co-jp</title>
+    <meta name="description" content="自走と共創で新たな循環を生みだす | 株式会社SmartThanks" />
+    <title>株式会社SmartThanks</title>
+    
+    <!-- OGP Settings -->
+    <meta property="og:title" content="株式会社SmartThanks" />
+    <meta property="og:description" content="自走と共創で新たな循環を生みだす" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://smartthanks.world/" />
+    <meta property="og:image" content="https://smartthanks.world/og-image.webp" />
+    
+    <!-- Font Services (Non-blocking) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" media="print" onload="this.media='all'">
+    
+    <!-- Critical Assets Preload (Desktop only) -->
+    <link rel="preload" as="image" href="/hero-bg.webp" fetchPriority="high" media="(min-width: 768px)">
   </head>
-  <body>
   <body>
     <div id="root">
       <style>
+        /* Initial Loader */
         .initial-loader {
-          position: fixed;
-          inset: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: white;
-          z-index: 9999;
+          position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #fff; z-index: 9999;
         }
         .spinner {
-          width: 40px;
-          height: 40px;
-          border: 3px solid #f3f3f3;
-          border-top: 3px solid #f59e0b; /* primary color */
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
+          width: 32px; height: 32px; border: 3px solid #f3f3f3; border-top: 3px solid #f59e0b; border-radius: 50%; animation: spin 1s linear infinite;
         }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
       </style>
       <div class="initial-loader">
         <div class="spinner"></div>

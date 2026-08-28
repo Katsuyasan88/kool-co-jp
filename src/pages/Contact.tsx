@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Send, CheckCircle } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { Send, CheckCircle, Mail, Smartphone } from 'lucide-react';
+import { Link, useSearchParams } from 'react-router-dom';
 import usePageTitle from '../hooks/usePageTitle.ts';
+
+const SUPPORT_EMAIL = 'support_smartthanks@kool.co.jp';
+
+const IP_CLAIM_ITEM = '著作権・商標等の権利侵害について';
 
 const Contact = () => {
   usePageTitle("お問い合わせ");
@@ -15,6 +19,9 @@ const Contact = () => {
     if (type === 'own-product') setSelectedItem('事業・サービスについて');
     if (type === 'producing') setSelectedItem('新規事業立ち上げ支援について');
     if (type === 'mentoring') setSelectedItem('研修・メンタリングについて');
+    if (type === 'gachacho') setSelectedItem('ガチャちょうの使い方・不具合について');
+    if (type === 'gachacho-privacy') setSelectedItem('ガチャちょうのデータ・プライバシーについて');
+    if (type === 'ip-claim') setSelectedItem(IP_CLAIM_ITEM);
   }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -128,9 +135,30 @@ const Contact = () => {
                     <option>研修・メンタリングについて</option>
                     <option>IT/経営コンサルティングについて</option>
                     <option>取材・メディア掲載について</option>
+                    <option>ガチャちょうの使い方・不具合について</option>
+                    <option>ガチャちょうのデータ・プライバシーについて</option>
+                    <option>{IP_CLAIM_ITEM}</option>
                     <option>その他</option>
                   </select>
                 </div>
+
+                {selectedItem === IP_CLAIM_ITEM && (
+                  <div className="mb-6 p-5 rounded-xl bg-bg-soft border border-border text-sm leading-relaxed">
+                    <p className="font-bold mb-2">権利侵害に関するお申し立てについて</p>
+                    <p className="mb-3">メッセージ内容には、次の情報をご記載ください。</p>
+                    <ul className="list-disc pl-5 space-y-1 text-text-muted">
+                      <li>申立者の氏名・組織名・連絡先</li>
+                      <li>権利者本人または代理人であることの説明</li>
+                      <li>対象となる著作物・商標等</li>
+                      <li>問題となる表示・画像・画面の説明</li>
+                      <li>確認に必要なURL、スクリーンショット、登録番号等</li>
+                      <li>希望する対応</li>
+                    </ul>
+                    <p className="mt-3 text-text-muted">
+                      お申し立ての内容は受付後に確認のうえ、対応いたします。
+                    </p>
+                  </div>
+                )}
 
                 <div className="mb-8">
                   <label className="block text-sm font-bold mb-2">メッセージ内容 <span className="text-red-500">*</span></label>
@@ -150,8 +178,55 @@ const Contact = () => {
                 >
                   {formStatus === 'submitting' ? '送信中...' : <>メッセージを送信する <Send size={20} /></>}
                 </button>
+
+                {formStatus === 'error' && (
+                  <p className="mt-4 text-sm text-red-600 text-center font-medium">
+                    送信に失敗しました。しばらくしてから再度お試しください。
+                  </p>
+                )}
               </form>
             )}
+
+            {/* ガチャちょう利用者向け案内 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="mt-10 bg-white border border-border p-6 md:p-8 rounded-[2rem] shadow-lg"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                  <Smartphone size={20} />
+                </div>
+                <h2 className="text-lg md:text-xl font-bold">アプリ「ガチャちょう」に関するお問い合わせ</h2>
+              </div>
+              <p className="text-sm md:text-base leading-relaxed mb-4">
+                ガチャちょうに関するお問い合わせは、このフォームまたは{' '}
+                <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary underline hover:text-primary-dark break-all inline-flex items-center gap-1">
+                  <Mail size={14} className="shrink-0" />{SUPPORT_EMAIL}
+                </a>{' '}
+                で受け付けています。
+              </p>
+              <p className="text-sm md:text-base leading-relaxed mb-3">
+                データの削除は、アプリの三本メニューから次の2つの操作をご利用いただけます。
+              </p>
+              <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-text-muted leading-relaxed">
+                <li>
+                  <span className="font-bold text-text-main">データリセット</span>: ガチャ帳、所持数、思い出メモ、保存画像を削除します。匿名アカウントとAI解析の利用履歴は残ります。
+                </li>
+                <li>
+                  <span className="font-bold text-text-main">アカウントを削除</span>: 匿名アカウントと関連するデータをすべて削除します。
+                </li>
+                <li>いずれの操作も取り消せません。削除したデータは復元できませんので、実行前に内容をご確認ください。</li>
+                <li>
+                  データの取扱いの詳細は{' '}
+                  <Link to="/privacy#gachacho" className="text-primary underline hover:text-primary-dark">
+                    プライバシーポリシー「ガチャちょうに関する個別の取扱い」
+                  </Link>{' '}
+                  をご覧ください。
+                </li>
+              </ul>
+            </motion.div>
           </div>
         </div>
       </div>

@@ -4,20 +4,22 @@ import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[60vh] md:min-h-[90vh] flex items-center pt-24 md:pt-20 overflow-hidden">
-      {/* Abstract Background Image */}
-      <div
-        className="absolute inset-0 z-0 opacity-10 grayscale pointer-events-none"
-        style={{
-          backgroundImage: 'url("/hero-bg.png")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
+    <section className="relative min-h-[60vh] md:min-h-[90vh] flex items-center pt-24 md:pt-20 overflow-hidden bg-white md:bg-transparent">
+      {/* Mobile background gradient */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-bg-soft to-white md:hidden" />
+
+      {/* Abstract Background Image - Optimized for LCP (Desktop only) */}
+      <img
+        src="/hero-bg.webp"
+        alt=""
+        fetchPriority="high"
+        decoding="async"
+        className="absolute inset-0 w-full h-full object-cover z-0 opacity-10 grayscale pointer-events-none hidden md:block"
       />
 
-      {/* Animated Background Blobs */}
-      <div className="circle-blob w-[600px] h-[600px] bg-primary top-[-100px] right-[-100px] blur-[120px]" />
-      <div className="circle-blob w-[500px] h-[500px] bg-secondary bottom-[-100px] left-[-100px] blur-[100px]" />
+      {/* Animated Background Blobs (Desktop only) */}
+      <div className="circle-blob w-[600px] h-[600px] bg-primary top-[-100px] right-[-100px] blur-[120px] hidden md:block" />
+      <div className="circle-blob w-[500px] h-[500px] bg-secondary bottom-[-100px] left-[-100px] blur-[100px] hidden md:block" />
 
       <div className="container relative z-10">
         <div className="max-w-3xl">
@@ -49,9 +51,9 @@ const Hero = () => {
       {/* Visual elements - heavy animations deferred slightly or simplified */}
       <motion.div
         className="hidden lg:block absolute right-[-5%] top-1/2 -translate-y-1/2 w-1/2"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1, delay: 0.3 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
       >
         <div className="relative w-[500px] h-[500px] mx-auto flex items-center justify-center">
           <div className="absolute inset-0 border-[3px] border-primary/20 rounded-full animate-[spin_20s_linear_infinite]"
