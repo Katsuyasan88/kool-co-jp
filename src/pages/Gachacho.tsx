@@ -32,7 +32,7 @@ const STEPS = [
     no: '01',
     title: '台紙を撮る',
     lead: '撮るだけ、かんたん。',
-    body: 'ガチャガチャの台紙を撮影するか、カメラロールから選ぶだけ。回して、集めて、共有する。カプセルトイ専用のコレクション帳がはじまります。',
+    body: 'ガチャの台紙を撮影するか、カメラロールから選ぶだけ。回して、集めて、共有する。カプセルトイ専用のコレクション帳がはじまります。',
     image: '/gachacho/store-01-capture.webp',
     alt: `${APP_NAME}でカプセルトイの台紙を撮影している画面。「回して・集めて・共有する」「撮るだけかんたん」`,
     icon: <Camera size={20} />,
@@ -115,7 +115,7 @@ const Gachacho = () => {
               </div>
 
               <h1 className="font-rounded font-bold text-3xl sm:text-4xl lg:text-5xl leading-snug md:leading-snug mb-6">
-                ガチャガチャの思い出を、
+                ガチャの思い出を、
                 <br />
                 <span className="text-gachacho-rose-deep">手帳みたいに</span>残そう。
               </h1>

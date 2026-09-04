@@ -11,7 +11,7 @@
 | # | 指示 | 結果 |
 |---|---|---|
 | 1 | 公式LP `/gachacho` | 新規 `src/pages/Gachacho.tsx`。lazy load。アプリ名「ガチャちょう」をタイトル・本文・運営者欄に明記 |
-| 2 | LPデザイン | コーポレートの Navbar / Footer / `.container` / `.section` / `.btn` を維持しつつ、製品部分はアプリ素材の配色（ピンク・紙色・茶系）と丸ゴシックで「手帳＋ガチャガチャ」を表現。紫青グラデーション・均一カード・意味のないピルは使っていない |
+| 2 | LPデザイン | コーポレートの Navbar / Footer / `.container` / `.section` / `.btn` を維持しつつ、製品部分はアプリ素材の配色（ピンク・紙色・茶系）と丸ゴシックで「手帳＋ガチャ」を表現。紫青グラデーション・均一カード・意味のないピルは使っていない |
 | 3 | `/service` からの導線 | 「自社プロダクト開発・R&D」内に、アイコン・名称・公開状況・短い説明・`/gachacho` への内部リンクを持つ製品ブロックを追加。既存の事業問い合わせCTAは維持 |
 | 4 | 利用規約ページ `/gachacho/terms` | 新規 `src/pages/GachachoTerms.tsx`。本文は `/gachacho/legal/current.json` を取得して描画（本文をこのリポジトリに複製しない） |
 | 4 | `/terms` 後方互換リダイレクト | `src/components/LegacyTermsRedirect.tsx`。クエリ・ハッシュを引き継いで `/gachacho/terms` へ `replace` 遷移。本文は置かない |
@@ -207,6 +207,10 @@ curl -sI -H "Origin: https://example.com" https://smartthanks.world/gachacho/leg
 - `deploy.ps1`（S3 同期・Invalidation）
 - 上記 2 つは同じ公開単位で実施し、公開後確認を `docs/DEPLOYMENT.md` 5.3 の手順で行う
 
-## 10. 停止位置
+## 10. 表記の統一（2026-09-04 4回目）
+
+ユーザー指示により、「ガチャガチャ」は登録商標のため LP 内の表現を「ガチャ」へ統一した（`src/pages/Gachacho.tsx` の Hero 見出しとステップ 01 本文の 2 箇所）。法務 JSON・利用規約・プライバシー本文には当該表記は含まれておらず変更なし。`grep` で `src/`・`public/`・`index.html` に「ガチャガチャ」が残っていないことを確認。lint / build / `git diff --check` 成功。
+
+## 11. 停止位置
 
 commit / push 済み。`deploy.ps1` は実行していない。Codex の差分・表示レビューと、ユーザーのサイト deploy 承認を待つ。公開後の Google ブランディング再申請は別のユーザー操作。
