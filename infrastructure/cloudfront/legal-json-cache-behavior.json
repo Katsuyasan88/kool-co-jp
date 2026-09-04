@@ -1,0 +1,20 @@
+{
+  "_comment": "ガチャちょう法務JSON（/gachacho/legal/*）専用の CloudFront キャッシュビヘイビア。apply-legal-cors.ps1 が E34UQ9BU9WL7K2 の CacheBehaviors に追加する。既存の DefaultCacheBehavior と他のパスには影響しない。ResponseHeadersPolicyId は AWS 管理ポリシー Managed-SimpleCORS（Access-Control-Allow-Origin: * を GET/HEAD 応答へ付与）、CachePolicyId は Managed-CachingOptimized。",
+  "PathPattern": "/gachacho/legal/*",
+  "TargetOriginId": "S3-kool-co-jp-web",
+  "TrustedSigners": { "Enabled": false, "Quantity": 0 },
+  "TrustedKeyGroups": { "Enabled": false, "Quantity": 0 },
+  "ViewerProtocolPolicy": "redirect-to-https",
+  "AllowedMethods": {
+    "Quantity": 2,
+    "Items": ["GET", "HEAD"],
+    "CachedMethods": { "Quantity": 2, "Items": ["GET", "HEAD"] }
+  },
+  "SmoothStreaming": false,
+  "Compress": true,
+  "LambdaFunctionAssociations": { "Quantity": 0 },
+  "FunctionAssociations": { "Quantity": 0 },
+  "FieldLevelEncryptionId": "",
+  "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+  "ResponseHeadersPolicyId": "60669652-455b-4ae9-85a4-c4c02393f86c"
+}

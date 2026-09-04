@@ -15,7 +15,10 @@ aws s3 sync dist/assets s3://kool-co-jp-web/assets --delete --cache-control "max
 aws s3 cp dist/index.html s3://kool-co-jp-web/index.html --cache-control "no-cache, no-store, must-revalidate"
 
 # その他のファイル (短〜中期間キャッシュ)
-aws s3 sync dist/ s3://kool-co-jp-web --exclude "assets/*" --exclude "index.html" --delete --cache-control "max-age=86400"
+aws s3 sync dist/ s3://kool-co-jp-web --exclude "assets/*" --exclude "index.html" --exclude "gachacho/legal/*" --delete --cache-control "max-age=86400"
+
+# ガチャちょう法務JSON (アプリが Content-Type に json を含む応答だけを受理するため明示する。旧版JSONは削除しない)
+aws s3 cp dist/gachacho/legal s3://kool-co-jp-web/gachacho/legal --recursive --content-type "application/json; charset=utf-8" --cache-control "max-age=3600"
 
 # 3. CloudFrontキャッシュ無効化
 Write-Host "Invalidating CloudFront cache..." -ForegroundColor Cyan

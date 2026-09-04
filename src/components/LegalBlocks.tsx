@@ -80,16 +80,22 @@ const Block = ({ block }: { block: LegalBlock }) => {
 
 type Props = {
   sections: LegalSection[];
+  /** 見出しレベル。単独ページでは h2、他ページの一項として埋め込む場合は h3 を使う */
+  headingLevel?: 'h2' | 'h3';
 };
 
 /** 法務 JSON の sections をそのまま描画する。文言はここで一切加工しない。 */
-const LegalBlocks = ({ sections }: Props) => (
+const LegalBlocks = ({ sections, headingLevel = 'h2' }: Props) => (
   <>
     {sections.map((section, i) => (
       <section key={i}>
-        <h2 className="text-xl md:text-2xl font-bold mb-4 border-l-4 border-primary pl-4">
-          {section.heading}
-        </h2>
+        {headingLevel === 'h2' ? (
+          <h2 className="text-xl md:text-2xl font-bold mb-4 border-l-4 border-primary pl-4">
+            {section.heading}
+          </h2>
+        ) : (
+          <h3 className="text-lg md:text-xl font-bold mt-6 mb-3">{section.heading}</h3>
+        )}
         <div className="space-y-4">
           {section.blocks.map((block, b) => (
             <Block key={b} block={block} />

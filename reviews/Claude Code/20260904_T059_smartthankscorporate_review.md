@@ -23,7 +23,7 @@
 
 ### 触っていないもの
 
-- `/privacy` の本文（既存の `Privacy.tsx` 第9項をそのまま維持。公開URLも維持）
+- `/privacy` の会社共通ポリシー本文（第1〜8項）と公開URL。第9項（ガチャちょう）は 9章の Codex 指摘対応で法務JSON描画へ切り替えた
 - `infrastructure/scripts/deploy.ps1`、AWS（S3 / CloudFront / Route 53）、Google Auth Platform、Firebase、Apple / Google のストア設定
 - CapCole リポジトリ（アプリ・backend・仕様書・法務本文）。参照とファイルコピーのみ
 - 未追跡の `.claude/`（commit に含めていない）
@@ -108,14 +108,14 @@ Navbar のメインナビは変更していない（企業サイトの主導線�
 | 区分 | オブジェクト | 備考 |
 |---|---|---|
 | 追加 | `gachacho/icon-512.webp`、`gachacho/store-01-capture.webp`、`gachacho/store-02-ai-collection.webp`、`gachacho/store-03-show-together.webp`、`gachacho/app-store-badge-jp.svg` | `max-age=86400` |
-| 追加 | `gachacho/legal/current.json`、`gachacho/legal/versions/1.0.json`、`gachacho/legal/versions/1.0.1.json` | `max-age=86400`。`aws s3 sync` の拡張子判定で `Content-Type: application/json` になる見込み。公開後に実応答ヘッダーを確認すること |
+| 追加 | `gachacho/legal/current.json`、`gachacho/legal/versions/1.0.json`、`gachacho/legal/versions/1.0.1.json` | `deploy.ps1` が `--content-type "application/json; charset=utf-8"`、`max-age=3600` で明示アップロード（9章参照）。旧版JSONは削除しない |
 | 更新 | `index.html`、`sitemap.xml` | フォントリンク追加、sitemap 追加 |
 | 更新 | `assets/*` | ハッシュ付きチャンク一式（新規 `Gachacho-*.js`、`GachachoTerms-*.js` を含む）。`--delete` により旧チャンクは削除 |
 | Invalidation | `/*` | スクリプト既定 |
 
 追加で必要になり得る AWS 側作業（今回は未実施・要承認）:
 
-- `current.json` に `Access-Control-Allow-Origin: *` を付ける場合は S3 の CORS 設定または CloudFront のレスポンスヘッダーポリシーが必要（CapCole `site/README.md` の要件。未設定でもアプリは同梱版へフォールバックする）。
+- `current.json` の `Access-Control-Allow-Origin: *`: 9章のとおり `apply-legal-cors.ps1 -Apply` で CloudFront に `/gachacho/legal/*` 専用ビヘイビアを追加する（未適用。要承認）。
 - `/terms` を HTTP 301 にしたい場合は CloudFront Function の追加。
 
 ## 6. Rollback 手順
@@ -126,7 +126,7 @@ Navbar のメインナビは変更していない（企業サイトの主導線�
 
 ## 7. 未解決・確認事項（Codex / ユーザー向け）
 
-1. **`/privacy` の本文と法務JSONの差**: `Privacy.tsx` 第9項は 2026-08-28 時点の独自構成（会社共通ポリシー＋ガチャちょう個別項）で、`current.json` の `privacy` セクション（11項構成）とは文言・構成が異なる。指示書は「公開URLは既存の `/privacy` を維持」「本文を独自に書き換えない」としているため今回は変更していない。CapCole 側の完了条件「`/privacy` と法務JSONが同じ確定本文を配信」を満たすには、`/privacy#gachacho` を JSON 描画へ切り替えるか、JSON側に合わせる判断が必要。
+1. ~~`/privacy` の本文と法務JSONの差~~: Codex 指摘1として 9章で対応済み（`/privacy#gachacho` を法務JSON描画へ切り替え）。
 2. **`/terms` はクライアント側リダイレクト**: HTTP 301 ではない。iOS 1.0.1 / build 9 は外部ブラウザで開くため実害はないが、301 が要件なら CloudFront Function を別途承認・実施する。
 3. **`versions/1.0.json`** は歴史的版として `https://smartthanks.world/terms` を記載したまま（CapCole 方針どおり上書きしない）。
 4. LP の文言（「無料」「1日10回」「カレンダーで月ごと」など）は CapCole の `docs/APP_STORE_SUBMISSIONS.md`、`docs/TERMS_AND_PRIVACY.md`、`docs/PRODUCT_SPEC.md` と照合済み。「Android版は準備中です」の表現可否は確認いただきたい。
@@ -140,6 +140,73 @@ Navbar のメインナビは変更していない（企業サイトの主導線�
 - App Store 導線を独自ボタンから Apple 公式バッジ（JP / Black lockup / SVG）へ変更。バッジは無改変、最小高さ 40px 以上を確保。
 - 旧画像 `screen-*.webp` 3点は削除。
 
-## 9. 停止位置
+## 9. Codex レビュー（`reviews/Codex/20260904_T059_review.md`）への対応（2026-09-04 3回目）
+
+### 指摘1: `/privacy#gachacho` を CapCole の確定本文へ同期
+
+- `src/pages/Privacy.tsx` の `id="gachacho"` 内の独自本文（旧 9.1〜9.8）を削除し、`/gachacho/legal/current.json` の `privacy.lead` と `privacy.sections` を描画するよう変更した。会社共通ポリシー（第1〜8項）と見出し「9. ガチャちょうに関する個別の取扱い」は維持。
+- 取得・検証処理は新設の `src/hooks/useGachachoLegal.ts` に集約し、`/gachacho/terms`（`GachachoTerms.tsx`）も同じフックを使う。`fetchGachachoLegal` のスキーマ検証はそのまま。
+- `LegalBlocks` に `headingLevel` prop を追加し、`/privacy` 内では h3、単独ページでは h2 で描画。文言の加工はしない（URL・メールのリンク化のみ）。
+- 文書版・制定日・最終更新日のメタ行と、機械可読版（`current.json` / `versions/{version}.json`）へのリンクを表示。
+- 取得失敗時: 「ガチャちょうのプライバシーポリシーを読み込めませんでした。」の表示、再読み込みボタン、`/contact?type=gachacho-privacy` とメールの導線（`role="alert"`）。読み込み中はスケルトンと `aria-live`。
+- `Privacy.tsx` にガチャちょうの本文文字列は残っていない（`grep "Firebase Authentication"` 等で確認）。
+
+### 指摘2: 法務JSONの CORS を公開手順で保証
+
+**読み取り確認（AWS への書き込みなし）**:
+
+| 確認 | コマンド | 結果 |
+|---|---|---|
+| S3 CORS | `aws s3api get-bucket-cors --bucket kool-co-jp-web` | `NoSuchCORSConfiguration`（未設定） |
+| CloudFront 既定ビヘイビア | `aws cloudfront get-distribution-config --id E34UQ9BU9WL7K2` | レガシー `ForwardedValues`（ヘッダー転送 0 件）、`ResponseHeadersPolicyId` なし、`CacheBehaviors` 0 件、`CustomErrorResponses` 403/404 → `/index.html` 200 |
+| 本番の現応答 | `curl -sI -H "Origin: https://example.com" https://smartthanks.world/sitemap.xml` | `Access-Control-Allow-Origin` なし |
+
+結論: **現状の AWS 設定では CORS ヘッダーは保証されていない**。S3 に CORS を足しても CloudFront が `Origin` を転送しないため効かない。
+
+**用意した冪等な設定案（未適用）**:
+
+| ファイル | 内容 |
+|---|---|
+| `infrastructure/cloudfront/legal-json-cache-behavior.json` | `/gachacho/legal/*` 専用のキャッシュビヘイビア定義。`Managed-SimpleCORS`（`60669652-455b-4ae9-85a4-c4c02393f86c`）で `Access-Control-Allow-Origin: *` を付与、`Managed-CachingOptimized`（`658327ea-...`）、GET/HEAD、redirect-to-https、compress |
+| `infrastructure/scripts/apply-legal-cors.ps1` | 引数なし: 読み取りと差分表示のみ。`-Apply`: 同名 PathPattern がなければ追加、内容が同じなら変更なしで終了（冪等）。`-Remove`: 削除（rollback）。適用前設定を `infrastructure/cloudfront/backups/`（.gitignore 済み）へ保存し、`--if-match` で ETag 競合を防ぐ |
+| `infrastructure/scripts/deploy.ps1` | `gachacho/legal/*` を sync から除外し、`--content-type "application/json; charset=utf-8" --cache-control "max-age=3600"` で明示アップロード。旧版JSONは削除しない |
+| `docs/DEPLOYMENT.md` 5章 | 現状・保証方法・適用手順・公開後確認の期待値・rollback |
+
+影響範囲: `/gachacho/legal/*` のみ。既定ビヘイビア、SPA フォールバック、他パスは変更しない。
+
+ドライラン実行結果（読み取りのみ）: `apply-legal-cors.ps1` を引数なしで実行し、`CacheBehaviors` 0 件 → 1 件（`/gachacho/legal/*`）の差分表示と「ドライランです」で終了することを確認。`update-distribution` は呼ばれていない。
+
+**公開後確認（第三者が判定できる期待値）**:
+
+```bash
+curl -sI -H "Origin: https://example.com" https://smartthanks.world/gachacho/legal/current.json
+```
+
+- `200`、`Content-Type: application/json; charset=utf-8`、`Access-Control-Allow-Origin: *`
+- `Managed-SimpleCORS` は `Origin` ヘッダーのある要求にだけ CORS ヘッダーを付けるため、`Origin` なしで付かないのは正常
+- `curl -s .../current.json | python -c "import sys,json;print(json.load(sys.stdin)['documentVersion'])"` が `1.0.1`
+
+**Rollback**: `.\infrastructure\scriptspply-legal-cors.ps1 -Remove`、または `backups/` の保存ファイルから復元。
+
+### 再検証結果
+
+| 項目 | 結果 |
+|---|---|
+| `npm run lint` / `npm run build` / `git diff --check` | すべて成功 |
+| JSON 同一性 | `public/gachacho/legal/` の 3 点が CapCole `site/gachacho/legal/` と SHA-256 一致（`current.json` = `versions/1.0.1.json` = `7530473e…`、`versions/1.0.json` = `5dfecdfe…`） |
+| `/privacy#gachacho` 本文 | h3 見出し 11 件（「1. 取得・取り扱う情報」〜「11. お問い合わせ」）、表 1、箇条書き 6、lead 段落、メタ行「文書版 1.0.1 ／ 制定日 2026年8月31日 ／ 最終更新日 2026年9月4日」。旧本文「9.1 対象サービス」は存在しない |
+| `/privacy#gachacho` アンカー | 直接アクセスで第9項へスクロール（要素上端 112px、ヘッダー下） |
+| `/privacy#gachacho` 取得失敗表示 | `/gachacho/legal/*` をブロックして確認。エラー文・再読み込み・問い合わせ導線を表示（`privacy_gachacho_error_mobile.webp`）。`/gachacho/terms` の失敗表示も同様に確認（`terms_error_mobile.webp`） |
+| 主要幅 | 375 / 1280px で横スクロールなし。`privacy_gachacho_mobile.webp` / `privacy_gachacho_desktop.webp` を更新 |
+| 旧 `/terms` | `/terms?x=1#top` → `/gachacho/terms?x=1#top`、h2 14 件を描画 |
+| `/gachacho` | 影響なし（App Store リンク 3 箇所、横スクロールなし、コンソールエラーなし） |
+
+### 未適用のまま残しているもの（要承認）
+
+- `apply-legal-cors.ps1 -Apply`（CloudFront 更新）
+- `deploy.ps1`（S3 同期・Invalidation）
+- 上記 2 つは同じ公開単位で実施し、公開後確認を `docs/DEPLOYMENT.md` 5.3 の手順で行う
+
+## 10. 停止位置
 
 commit / push 済み。`deploy.ps1` は実行していない。Codex の差分・表示レビューと、ユーザーのサイト deploy 承認を待つ。公開後の Google ブランディング再申請は別のユーザー操作。

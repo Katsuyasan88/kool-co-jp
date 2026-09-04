@@ -1,22 +1,15 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FileJson } from 'lucide-react';
 import usePageTitle from '../hooks/usePageTitle.ts';
 import useCanonical from '../hooks/useCanonical.ts';
+import useGachachoLegal from '../hooks/useGachachoLegal.ts';
 import LegalBlocks from '../components/LegalBlocks.tsx';
 import {
-  fetchGachachoLegal,
   formatLegalDate,
   gachachoLegalVersionPath,
   GACHACHO_LEGAL_CURRENT_PATH,
-  type LegalDocument,
 } from '../data/gachachoLegal.ts';
-
-type LoadState =
-  | { status: 'loading' }
-  | { status: 'ready'; doc: LegalDocument }
-  | { status: 'error' };
 
 /**
  * ガチャちょう 利用規約（公開 URL: /gachacho/terms）
@@ -27,19 +20,7 @@ type LoadState =
 const GachachoTerms = () => {
   usePageTitle('ガチャちょう 利用規約');
   useCanonical('/gachacho/terms');
-  const [state, setState] = useState<LoadState>({ status: 'loading' });
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchGachachoLegal(controller.signal)
-      .then((doc) => setState({ status: 'ready', doc }))
-      .catch((err: unknown) => {
-        if (controller.signal.aborted) return;
-        console.error(err);
-        setState({ status: 'error' });
-      });
-    return () => controller.abort();
-  }, []);
+  const state = useGachachoLegal();
 
   return (
     <div className="pt-32 pb-20 bg-white">
