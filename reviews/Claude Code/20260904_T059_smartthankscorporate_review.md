@@ -110,7 +110,7 @@ Navbar のメインナビは変更していない（企業サイトの主導線�
 | 追加 | `gachacho/icon-512.webp`、`gachacho/store-01-capture.webp`、`gachacho/store-02-ai-collection.webp`、`gachacho/store-03-show-together.webp`、`gachacho/app-store-badge-jp.svg` | `max-age=86400` |
 | 追加 | `gachacho/legal/current.json`、`gachacho/legal/versions/1.0.json`、`gachacho/legal/versions/1.0.1.json` | `deploy.ps1` が `--content-type "application/json; charset=utf-8"`、`max-age=3600` で明示アップロード（9章参照）。旧版JSONは削除しない |
 | 更新 | `index.html`、`sitemap.xml` | フォントリンク追加、sitemap 追加 |
-| 更新 | `assets/*` | ハッシュ付きチャンク一式（新規 `Gachacho-*.js`、`GachachoTerms-*.js` を含む）。`--delete` により旧チャンクは削除 |
+| 更新 | `assets/*` | ハッシュ付きチャンク一式（新規 `Gachacho-*.js`、`GachachoTerms-*.js` を含む）。`--delete` により旧チャンクは削除。配布順は assets → 一般ファイル → 法務JSON → `index.html` → Invalidation（11章） |
 | Invalidation | `/*` | スクリプト既定 |
 
 追加で必要になり得る AWS 側作業（今回は未実施・要承認）:
@@ -118,11 +118,34 @@ Navbar のメインナビは変更していない（企業サイトの主導線�
 - `current.json` の `Access-Control-Allow-Origin: *`: 9章のとおり `apply-legal-cors.ps1 -Apply` で CloudFront に `/gachacho/legal/*` 専用ビヘイビアを追加する（未適用。要承認）。
 - `/terms` を HTTP 301 にしたい場合は CloudFront Function の追加。
 
-## 6. Rollback 手順
+## 6. Rollback 手順（第2回 Codex レビューで訂正）
 
-1. 直前のコミット `e8ee101` を checkout して `.\infrastructure\scripts\deploy.ps1` を実行する（`assets/` と非 assets は `--delete` 付き sync のため、`gachacho/` 配下と新チャンクは削除される）。
-2. 部分的に戻す場合: `aws s3 rm s3://kool-co-jp-web/gachacho/ --recursive` の後、`aws cloudfront create-invalidation --distribution-id E34UQ9BU9WL7K2 --paths "/gachacho*" "/terms" "/index.html" "/sitemap.xml"`。
-3. 旧 iOS 版が参照する `/terms` は rollback 後も CloudFront の SPA フォールバックにより 404 ページ（React 側）になる。rollback 中は規約URLが表示できないため、実施前に CapCole 側へ連絡する。
+### 6.1 互換性 floor（初回公開後に守る最低条件）
+
+公開中の iOS version `1.0.1` / build `9` は `https://smartthanks.world/terms` を、以降の版とアプリ内リンクは `/gachacho/terms`・`/privacy`・`/gachacho/legal/current.json` を参照する。初回公開後は、次をすべて満たす版だけを公開してよい。
+
+- 旧 `/terms` → `/gachacho/terms` の後方互換リダイレクトが動く
+- `/gachacho/terms` が canonical な規約ページとして本文を表示する
+- `/gachacho/legal/current.json` と `versions/*.json` が配信され、S3 の `gachacho/legal/versions/*` を削除しない
+- `/privacy`（`#gachacho` を含む）が表示される
+
+このため **`e8ee101` 以前（`/terms`・`/gachacho/terms`・法務JSONを持たない版）への全面 rollback は禁止**する。旧版へ `deploy.ps1` を実行すると `--delete` 付き sync で `gachacho/` 配下と新 chunk が消え、規約URLが 404 になる。
+
+### 6.2 初回公開で問題が出た場合の手順（優先順）
+
+1. **Roll-forward（原則）**: 互換性 floor を保ったまま修正コミットを作り、lint / build / stub テスト後に `deploy.ps1` で公開する。`deploy.ps1` は失敗時に即時停止し、`index.html` を最後に切り替えるため、途中失敗でも公開中の `index.html` は旧 chunk を参照し続ける。
+2. **互換性を保つ rollback 成果物へ戻す**: 公開時に公開コミットへ git tag（例: `deploy/20260904-t059`）を付けておき、問題が出た版より前で **floor を満たす** タグへ checkout して `deploy.ps1` を実行する。T-059 初回公開では floor を満たす最古の版が初回公開コミット自身なので、初回公開に対しては 1 の roll-forward しか選べない。
+3. S3 の `gachacho/legal/versions/*` はどの手順でも削除しない（`deploy.ps1` は `gachacho/legal/*` を `--delete` 対象から除外している）。手動で `aws s3 rm` しない。
+
+### 6.3 CORS 設定だけを戻す場合（上記とは別）
+
+`apply-legal-cors.ps1 -Remove` で CloudFront の `/gachacho/legal/*` ビヘイビアだけを削除する（`docs/DEPLOYMENT.md` 5.4）。サイト本体・S3 オブジェクト・法務JSONには影響しない。戻すと cross-origin GET の `Access-Control-Allow-Origin` が付かなくなるが、アプリは同梱版へフォールバックするため規約URL自体は壊れない。
+
+### 6.4 やってはいけないこと
+
+- `e8ee101` 以前への checkout + `deploy.ps1`
+- `aws s3 rm s3://kool-co-jp-web/gachacho/ --recursive` などの `gachacho/` 配下一括削除
+- `index.html` だけ先に差し替える手動アップロード（未配置 chunk を参照する）
 
 ## 7. 未解決・確認事項（Codex / ユーザー向け）
 
@@ -211,6 +234,70 @@ curl -sI -H "Origin: https://example.com" https://smartthanks.world/gachacho/leg
 
 ユーザー指示により、「ガチャガチャ」は登録商標のため LP 内の表現を「ガチャ」へ統一した（`src/pages/Gachacho.tsx` の Hero 見出しとステップ 01 本文の 2 箇所）。法務 JSON・利用規約・プライバシー本文には当該表記は含まれておらず変更なし。`grep` で `src/`・`public/`・`index.html` に「ガチャガチャ」が残っていないことを確認。lint / build / `git diff --check` 成功。
 
-## 11. 停止位置
+## 11. Codex 第2回レビューへの対応（2026-09-04 5回目）
 
-commit / push 済み。`deploy.ps1` は実行していない。Codex の差分・表示レビューと、ユーザーのサイト deploy 承認を待つ。公開後の Google ブランディング再申請は別のユーザー操作。
+対象: `reviews/Codex/20260904_T059_review.md` 「第2回レビュー」指摘1・2。LP・privacy 本文・CapCole リポジトリは変更していない。
+
+### 指摘1: `deploy.ps1` の部分失敗を成功扱いしない
+
+`infrastructure/scripts/deploy.ps1` を書き直した。
+
+- `Invoke-Step` で build と各 AWS CLI 呼び出しの終了コードを確認し、0 以外なら `FAILED: <ステップ名>` を表示して `exit 1`。以降の処理と `Deployment complete!` へ進まない。`$ErrorActionPreference = 'Stop'`。
+- 配布順を「`assets/`（`--delete`）→ 画像・sitemap 等の一般ファイル（`index.html` と `gachacho/legal/*` を除外、`--delete`）→ 法務JSON（`application/json; charset=utf-8`、`--delete` なし）→ `index.html`（切替点、no-cache）→ Invalidation `/*`」に変更。公開中の `index.html` が未配置の chunk / JSON を参照する時間をつくらない。
+- build 後に `dist/index.html` の存在を確認してから同期する。
+- S3 の `gachacho/legal/versions/*` は `--delete` 対象外のまま。
+
+**副作用なし検証**: `infrastructure/scripts/tests/deploy.stubtest.ps1` を追加。PATH 先頭に置いた `aws.cmd` stub が全呼び出しを記録し、`STUB_FAIL_MATCH` に一致する呼び出しだけ `exit 1` を返す。`npm run build` は実行されるが AWS への書き込みは発生しない。実行結果（24 アサーション、すべて PASS）:
+
+```
+Case 1: all succeed
+  PASS  exit code 0 (actual 0)
+  PASS  aws called 5 times (actual 5)
+  PASS  call 1 is 's3 sync'
+  PASS  call 2 is 's3 sync'
+  PASS  call 3 is 's3 cp'
+  PASS  call 4 is 's3 cp'
+  PASS  call 5 is 'cloudfront create-invalidation'
+  PASS  legal JSON uploaded with explicit Content-Type before index.html
+  PASS  index.html is uploaded after assets, static files and legal JSON
+  PASS  legal JSON is never synced with --delete (only excluded from sync)
+  PASS  success message shown
+Case 2: legal JSON upload fails
+  PASS  exit code 1 (actual 1)
+  PASS  stops after 3rd aws call (actual 3)
+  PASS  index.html is NOT uploaded
+  PASS  invalidation is NOT created
+  PASS  no success message
+  PASS  failure names the step
+Case 3: assets sync fails
+  PASS  exit code 1 (actual 1)
+  PASS  stops after 1st aws call (actual 1)
+  PASS  no success message
+Case 4: invalidation fails
+  PASS  exit code 1 (actual 1)
+  PASS  all 5 aws calls attempted (actual 5)
+  PASS  no success message
+ALL PASSED
+```
+
+- ケース1（全成功）: aws 呼び出し 5 回、順序 `s3 sync`(assets) → `s3 sync`(static) → `s3 cp`(legal JSON, Content-Type 明示) → `s3 cp`(index.html) → `create-invalidation`。法務JSONを `--delete` 付き sync していない。成功表示あり。
+- ケース2（法務JSON upload 失敗）: 3 回目で停止、`index.html` と Invalidation は呼ばれない、成功表示なし、exit 1、`FAILED: Upload legal JSON` を表示。
+- ケース3（assets sync 失敗）: 1 回目で停止、exit 1。
+- ケース4（Invalidation 失敗）: exit 1、成功表示なし。
+
+### 指摘2: 旧 iOS 導線を壊す rollback を完了手順にしない
+
+- 本 md の 6 章を全面訂正した。互換性 floor（旧 `/terms` リダイレクト、`/gachacho/terms`、法務JSON、`/privacy`）を明記し、**`e8ee101` 以前への全面 rollback を禁止**。初回公開時は roll-forward のみ、以降は floor を満たす deploy tag への rollback、CORS だけの `apply-legal-cors.ps1 -Remove` を分けて記載。`gachacho/legal/versions/*` と `gachacho/` 配下の手動削除を禁止事項に列挙。
+- `docs/DEPLOYMENT.md` の 5.4 を「CORS 設定だけを戻す」に限定し、6 章「デプロイの安全順序と Rollback 方針」を追加（配布順、stub テスト、公開時の deploy tag 付与、floor、roll-forward 優先、版別JSON不削除）。
+
+### 再検証
+
+| 項目 | 結果 |
+|---|---|
+| `npm run lint` / `npm run build` / `git diff --check` | 成功 |
+| `deploy.stubtest.ps1` | 24 / 24 PASS（上記） |
+| AWS への書き込み | なし（stub のみ。`apply-legal-cors.ps1 -Apply`、`deploy.ps1` の実行は未実施） |
+
+## 12. 停止位置
+
+commit / push 済み。本番 deploy、`apply-legal-cors.ps1 -Apply`、Google・Firebase・ストア操作は未実施。Codex の再レビューとユーザーの個別承認を待つ。

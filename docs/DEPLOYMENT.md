@@ -80,9 +80,37 @@ curl -s https://smartthanks.world/gachacho/legal/current.json | python -c "impor
 curl -sI https://smartthanks.world/gachacho/legal/versions/1.0.1.json | grep -i "content-type"
 ```
 
-### 5.4 Rollback
+### 5.4 CORS 設定だけを戻す（Rollback）
 ```powershell
 # /gachacho/legal/* のビヘイビアを削除し、追加前の状態に戻す
 .\infrastructure\scripts\apply-legal-cors.ps1 -Remove
 ```
-または `infrastructure/cloudfront/backups/` の保存ファイルから `DistributionConfig` を取り出し、`aws cloudfront update-distribution --if-match <現在のETag>` で復元します。JSON オブジェクト自体の rollback は `docs` ではなく各リリースのレビューmdの手順に従います。
+または `infrastructure/cloudfront/backups/` の保存ファイルから `DistributionConfig` を取り出し、`aws cloudfront update-distribution --if-match <現在のETag>` で復元します。これは CloudFront のビヘイビアだけを戻す操作で、S3 オブジェクト・サイト本体・法務JSONには影響しません（アプリは CORS がなくても同梱版へフォールバックします）。サイト本体の rollback は 6 章に従います。
+
+## 6. デプロイの安全順序と Rollback 方針
+
+### 6.1 `deploy.ps1` の動作
+- 各ステップ（build と AWS CLI 呼び出し）は終了コードを確認し、失敗したら即時停止して `Deployment complete!` を表示しません。
+- 配布順は次のとおりです。`index.html` を最後に置くことで、公開中の `index.html` が未配置の chunk や JSON を参照する時間をつくりません。
+  1. `assets/`（ハッシュ付き。`--delete`）
+  2. 画像・sitemap 等の一般ファイル（`index.html` と `gachacho/legal/*` を除外。`--delete`）
+  3. `gachacho/legal/*`（`application/json; charset=utf-8` を明示。`--delete` なし。版別JSONは残す）
+  4. `index.html`（切替点。no-cache）
+  5. CloudFront Invalidation `/*`
+- 副作用なしテスト: `.\infrastructure\scripts\tests\deploy.stubtest.ps1`（aws を stub に差し替え、途中失敗で停止することと順序を検証。`npm run build` は実行される）
+- 公開時は公開したコミットへ tag を付けてください（例: `git tag deploy/20260904-t059 && git push origin deploy/20260904-t059`）。互換性を保つ rollback 先になります。
+
+### 6.2 互換性 floor
+公開中のアプリ「ガチャちょう」（iOS 1.0.1 / build 9 以降）が参照する次の URL は、初回公開後は常に動作する版だけを公開します。
+- 旧 `/terms` → `/gachacho/terms` のリダイレクト
+- `/gachacho/terms`（規約本文）
+- `/gachacho/legal/current.json` と `versions/*.json`
+- `/privacy`
+
+**これらを持たない版（`e8ee101` 以前）への全面 rollback は禁止**です。旧版で `deploy.ps1` を実行すると `--delete` により `gachacho/` 配下が消え、規約URLが 404 になります。
+
+### 6.3 問題発生時の手順
+1. 原則 **roll-forward**: floor を保った修正版を作り、lint / build / stub テストの後に `deploy.ps1` で公開する。
+2. rollback が必要な場合は、floor を満たす直近の deploy tag へ checkout して `deploy.ps1` を実行する（floor を満たさない tag へは戻さない）。
+3. どの場合も S3 の `gachacho/legal/versions/*` を削除しない。`aws s3 rm` で `gachacho/` 配下を一括削除しない。
+4. CORS だけを戻す場合は 5.4 の `-Remove` を使い、サイト本体の rollback と混同しない。
