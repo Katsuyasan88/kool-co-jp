@@ -56,10 +56,10 @@ CORS は CloudFront に `/gachacho/legal/*` 専用のキャッシュビヘイビ
 
 ```powershell
 # 差分の表示のみ（読み取りだけ）
-.\infrastructure\scriptspply-legal-cors.ps1
+.\infrastructure\scripts\apply-legal-cors.ps1
 
 # 適用（冪等。既に同じ内容なら変更なしで終了）
-.\infrastructure\scriptspply-legal-cors.ps1 -Apply
+.\infrastructure\scripts\apply-legal-cors.ps1 -Apply
 ```
 
 影響範囲は `/gachacho/legal/*` のみです。既定ビヘイビア、403/404 → `index.html` のSPAフォールバック、他のパスのキャッシュ設定は変更しません。適用前の設定は `infrastructure/cloudfront/backups/` に保存されます。
@@ -83,6 +83,6 @@ curl -sI https://smartthanks.world/gachacho/legal/versions/1.0.1.json | grep -i 
 ### 5.4 Rollback
 ```powershell
 # /gachacho/legal/* のビヘイビアを削除し、追加前の状態に戻す
-.\infrastructure\scriptspply-legal-cors.ps1 -Remove
+.\infrastructure\scripts\apply-legal-cors.ps1 -Remove
 ```
 または `infrastructure/cloudfront/backups/` の保存ファイルから `DistributionConfig` を取り出し、`aws cloudfront update-distribution --if-match <現在のETag>` で復元します。JSON オブジェクト自体の rollback は `docs` ではなく各リリースのレビューmdの手順に従います。

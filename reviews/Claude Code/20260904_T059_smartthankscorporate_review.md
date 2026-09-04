@@ -186,7 +186,7 @@ curl -sI -H "Origin: https://example.com" https://smartthanks.world/gachacho/leg
 - `Managed-SimpleCORS` は `Origin` ヘッダーのある要求にだけ CORS ヘッダーを付けるため、`Origin` なしで付かないのは正常
 - `curl -s .../current.json | python -c "import sys,json;print(json.load(sys.stdin)['documentVersion'])"` が `1.0.1`
 
-**Rollback**: `.\infrastructure\scriptspply-legal-cors.ps1 -Remove`、または `backups/` の保存ファイルから復元。
+**Rollback**: `.\infrastructure\scripts\apply-legal-cors.ps1 -Remove`、または `backups/` の保存ファイルから復元。
 
 ### 再検証結果
 
