@@ -18,7 +18,8 @@
 | 4 | 法務JSON静的配信 | `public/gachacho/legal/current.json`、`versions/1.0.json`、`versions/1.0.1.json` を CapCole `site/gachacho/legal/` からそのままコピー（バイト単位で同一。本文の書き換えなし） |
 | 4 | canonical | `useCanonical` フックで `/gachacho` と `/gachacho/terms` に `<link rel="canonical">` を設定 |
 | 4 | sitemap | `/gachacho`、`/gachacho/terms` を追加。`/terms` は追加していない |
-| 5 | 画像 | CapCole の App Store 用画像3点とアイコンを WebP へ変換して `public/gachacho/` に配置。元ファイルは未変更 |
+| 5 | 画像 | ユーザー提供の App Store 掲載画像 version 1.0.1（`gacha-cho_1.0.1_page1〜3.png`、1242×2688）を 720px 幅の WebP へ変換して `public/gachacho/store-0*.webp` に配置。アイコンは CapCole `design/derived/app-icon/icon.png` から変換。元ファイルは未変更 |
+| 1 | App Store 導線 | Apple 公式バッジ（JP / Black lockup / SVG `Download_on_the_App_Store_Badge_JP_RGB_blk_100317.svg`）を `public/gachacho/app-store-badge-jp.svg` に無改変で配置し、Hero と最終CTAの2箇所で使用。高さ 48px（モバイル）/ 60px（デスクトップ）、リンク要素の内側余白で周囲の余白を確保 |
 
 ### 触っていないもの
 
@@ -40,7 +41,8 @@
 | `src/components/LegalBlocks.tsx` | 法務JSONの `sections` を描画（paragraph / bullets / table）。本文中のURL・メールを自動リンク化するだけで文言は加工しない |
 | `src/data/gachachoLegal.ts` | 法務JSONの型・スキーマ検証・取得関数・日付整形 |
 | `src/hooks/useCanonical.ts` | canonical link の設定 |
-| `public/gachacho/icon-512.webp` ほか画像4点 | LP・`/service` 用画像 |
+| `public/gachacho/icon-512.webp`、`store-01-capture.webp`、`store-02-ai-collection.webp`、`store-03-show-together.webp` | LP・`/service` 用画像 |
+| `public/gachacho/app-store-badge-jp.svg` | Apple 公式 App Store バッジ（JP・黒） |
 | `public/gachacho/legal/**` | 法務JSON 3点 |
 | `docs/GACHACHO_LP_TASK.md` | 指示書（ユーザー作成。そのまま commit） |
 
@@ -70,9 +72,9 @@ Navbar のメインナビは変更していない（企業サイトの主導線�
 | 項目 | 結果 |
 |---|---|
 | `npm run lint` | 成功（警告なし） |
-| `npm run build` | 成功。`dist/gachacho/legal/` に JSON 3点、画像4点が出力されることを確認 |
+| `npm run build` | 成功。`dist/gachacho/legal/` に JSON 3点、`dist/gachacho/` に画像4点とバッジSVGが出力されることを確認 |
 | `git diff --check` | 問題なし |
-| `/gachacho` | タイトル `ガチャちょう \| 株式会社SmartThanks`、canonical `https://smartthanks.world/gachacho`。App Store リンク3箇所すべて `https://apps.apple.com/jp/app/id6798359468`。Google Play / Android 配信を示すリンクなし。内部リンク `/company`、`/contact?type=gachacho`、`/gachacho/terms`、`/privacy#gachacho` |
+| `/gachacho` | タイトル `ガチャちょう \| 株式会社SmartThanks`、canonical `https://smartthanks.world/gachacho`。App Store リンク3箇所（公式バッジ2箇所＋情報欄のテキストリンク）すべて `https://apps.apple.com/jp/app/id6798359468`。Google Play / Android 配信を示すリンクなし。内部リンク `/company`、`/contact?type=gachacho`、`/gachacho/terms`、`/privacy#gachacho` |
 | `/gachacho/terms` | 第1条〜第14条の14見出しを描画。メタ行「文書版 1.0.1 ／ 制定日 2026年8月31日 ／ 最終更新日 2026年9月4日」。canonical `https://smartthanks.world/gachacho/terms` |
 | `/terms?x=1#top` 直接アクセス | `/gachacho/terms?x=1#top` へ到達（クエリ・ハッシュ保持）。規約本文が表示される |
 | `/gachacho/legal/current.json` | 200 で JSON が返る |
@@ -105,7 +107,7 @@ Navbar のメインナビは変更していない（企業サイトの主導線�
 
 | 区分 | オブジェクト | 備考 |
 |---|---|---|
-| 追加 | `gachacho/icon-512.webp`、`gachacho/screen-photo-ai.webp`、`gachacho/screen-check-items.webp`、`gachacho/screen-show-together.webp` | `max-age=86400` |
+| 追加 | `gachacho/icon-512.webp`、`gachacho/store-01-capture.webp`、`gachacho/store-02-ai-collection.webp`、`gachacho/store-03-show-together.webp`、`gachacho/app-store-badge-jp.svg` | `max-age=86400` |
 | 追加 | `gachacho/legal/current.json`、`gachacho/legal/versions/1.0.json`、`gachacho/legal/versions/1.0.1.json` | `max-age=86400`。`aws s3 sync` の拡張子判定で `Content-Type: application/json` になる見込み。公開後に実応答ヘッダーを確認すること |
 | 更新 | `index.html`、`sitemap.xml` | フォントリンク追加、sitemap 追加 |
 | 更新 | `assets/*` | ハッシュ付きチャンク一式（新規 `Gachacho-*.js`、`GachachoTerms-*.js` を含む）。`--delete` により旧チャンクは削除 |
@@ -130,6 +132,14 @@ Navbar のメインナビは変更していない（企業サイトの主導線�
 4. LP の文言（「無料」「1日10回」「カレンダーで月ごと」など）は CapCole の `docs/APP_STORE_SUBMISSIONS.md`、`docs/TERMS_AND_PRIVACY.md`、`docs/PRODUCT_SPEC.md` と照合済み。「Android版は準備中です」の表現可否は確認いただきたい。
 5. `og:image` は既存の未作成状態のまま。LP用の OGP 画像は本タスク範囲外。
 
-## 8. 停止位置
+## 8. 追記（2026-09-04 2回目）
+
+ユーザー指示により次を差し替えた。lint / build / `git diff --check` 再実行済み、LPのスクリーンショット3点（desktop / mobile / 320）を更新。
+
+- LP内のアプリ画像を、ユーザー提供の App Store 掲載画像 version 1.0.1（3ページ）へ置き換え。画像に焼き込まれた見出し（「撮るだけかんたん」「AI自動解析でかんたんコレクション」「シール帳みたいに見せ合おう」）に合わせて3ステップの文言を調整した（02 を「AIが読み取り、確認して保存」とし、保存前の確認・修正を明記）。
+- App Store 導線を独自ボタンから Apple 公式バッジ（JP / Black lockup / SVG）へ変更。バッジは無改変、最小高さ 40px 以上を確保。
+- 旧画像 `screen-*.webp` 3点は削除。
+
+## 9. 停止位置
 
 commit / push 済み。`deploy.ps1` は実行していない。Codex の差分・表示レビューと、ユーザーのサイト deploy 承認を待つ。公開後の Google ブランディング再申請は別のユーザー操作。

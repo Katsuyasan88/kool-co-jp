@@ -21,34 +21,39 @@ import useCanonical from '../hooks/useCanonical.ts';
 // OAuth 同意画面・App Store と同じアプリ名。表記ゆれを起こさないため定数にする
 const APP_NAME = 'ガチャちょう';
 const APP_STORE_URL = 'https://apps.apple.com/jp/app/id6798359468';
+// Apple 公式バッジ（JP / Black lockup）。Apple のガイドラインに従い、改変せず最小高さ 40px と余白を確保して使う
+const APP_STORE_BADGE = '/gachacho/app-store-badge-jp.svg';
+// App Store 掲載画像（version 1.0.1）。ストア用の構成画像をそのまま使う
+const STORE_IMAGE_WIDTH = 720;
+const STORE_IMAGE_HEIGHT = 1558;
 
 const STEPS = [
   {
     no: '01',
     title: '台紙を撮る',
-    lead: '写真を撮るだけ。',
-    body: 'ガチャガチャの台紙を撮影するか、カメラロールから選ぶだけ。AIが商品名・価格・ラインナップを読み取って、コレクション帳のページをつくります。',
-    image: '/gachacho/screen-photo-ai.webp',
-    alt: `${APP_NAME}で台紙を読み取り、ラインナップが並んだコレクション帳の画面`,
+    lead: '撮るだけ、かんたん。',
+    body: 'ガチャガチャの台紙を撮影するか、カメラロールから選ぶだけ。回して、集めて、共有する。カプセルトイ専用のコレクション帳がはじまります。',
+    image: '/gachacho/store-01-capture.webp',
+    alt: `${APP_NAME}でカプセルトイの台紙を撮影している画面。「回して・集めて・共有する」「撮るだけかんたん」`,
     icon: <Camera size={20} />,
   },
   {
     no: '02',
-    title: '持っているものにチェック',
-    lead: '外出先でも、すぐわかる。',
-    body: 'アイテムをタップして所持数を記録。ダブりも一目でわかるので、お店の前で「これ持ってたっけ？」がなくなります。',
-    image: '/gachacho/screen-check-items.webp',
-    alt: `${APP_NAME}のコレクション画面で、所持アイテムと所持数を確認している様子`,
-    icon: <Layers size={20} />,
+    title: 'AIが読み取り、確認して保存',
+    lead: 'AI自動解析で、かんたんコレクション。',
+    body: 'AIが商品名・価格・ラインナップを読み取って下書きをつくります。読み取り結果は保存前に確認・修正できるので、間違いがあってもその場で直せます。',
+    image: '/gachacho/store-02-ai-collection.webp',
+    alt: `${APP_NAME}のAI解析結果を確認・編集している画面。「AI自動解析でかんたんコレクション」`,
+    icon: <Sparkles size={20} />,
   },
   {
     no: '03',
     title: 'ならべて、見せ合う',
     lead: 'シール帳みたいに。',
-    body: '推しのラインナップを手帳のように眺めたり、友だちとその場で見せ合ったり。取得日や場所のメモも一緒に残せます。',
-    image: '/gachacho/screen-show-together.webp',
-    alt: `${APP_NAME}のコレクション帳を2台のiPhoneで見せ合っている様子`,
-    icon: <Sparkles size={20} />,
+    body: '持っているものにチェックを付けて、推しのラインナップを手帳のように眺めたり、友だちとその場で見せ合ったり。取得日や場所のメモも一緒に残せます。',
+    image: '/gachacho/store-03-show-together.webp',
+    alt: `${APP_NAME}のコレクション画面。「シール帳みたいに見せ合おう」`,
+    icon: <Layers size={20} />,
   },
 ];
 
@@ -124,10 +129,15 @@ const Gachacho = () => {
                   href={APP_STORE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn bg-gachacho-ink text-white shadow-lg shadow-gachacho-ink/20 hover:-translate-y-0.5 hover:shadow-xl inline-flex items-center justify-center gap-2 text-center whitespace-nowrap shrink-0"
+                  className="inline-block shrink-0 p-3 -m-3 transition-transform hover:-translate-y-0.5"
                 >
-                  App Storeでダウンロード
-                  <ArrowRight size={18} aria-hidden="true" />
+                  <img
+                    src={APP_STORE_BADGE}
+                    alt="App Storeでダウンロード"
+                    width={163}
+                    height={60}
+                    className="h-12 md:h-[60px] w-auto"
+                  />
                 </a>
                 <p className="text-sm text-gachacho-mute leading-relaxed">
                   iPhone向けに配信中（無料）。
@@ -150,10 +160,10 @@ const Gachacho = () => {
                   className="absolute -top-3 left-1/2 -translate-x-1/2 rotate-[-6deg] w-28 h-7 bg-gachacho-gold/50 backdrop-blur-sm z-10 rounded-sm"
                 />
                 <img
-                  src="/gachacho/screen-photo-ai.webp"
+                  src={STEPS[0].image}
                   alt={STEPS[0].alt}
-                  width={720}
-                  height={1255}
+                  width={STORE_IMAGE_WIDTH}
+                  height={STORE_IMAGE_HEIGHT}
                   fetchPriority="high"
                   className="w-full h-auto rounded-[2rem] shadow-2xl shadow-gachacho-rose/30 border-4 border-white"
                 />
@@ -187,8 +197,8 @@ const Gachacho = () => {
                     <img
                       src={step.image}
                       alt={step.alt}
-                      width={720}
-                      height={1255}
+                      width={STORE_IMAGE_WIDTH}
+                      height={STORE_IMAGE_HEIGHT}
                       loading="lazy"
                       className="w-full h-auto rounded-[1.75rem] shadow-xl shadow-gachacho-rose/20 border-4 border-white"
                     />
@@ -397,10 +407,16 @@ const Gachacho = () => {
               href={APP_STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn bg-gachacho-ink text-white shadow-lg shadow-gachacho-ink/20 hover:-translate-y-0.5 hover:shadow-xl inline-flex items-center justify-center gap-2 whitespace-nowrap"
+              className="inline-block p-3 -m-3 transition-transform hover:-translate-y-0.5"
             >
-              App Storeでダウンロード
-              <ArrowRight size={18} aria-hidden="true" />
+              <img
+                src={APP_STORE_BADGE}
+                alt="App Storeでダウンロード"
+                width={163}
+                height={60}
+                loading="lazy"
+                className="h-12 md:h-[60px] w-auto"
+              />
             </a>
           </motion.div>
         </div>
