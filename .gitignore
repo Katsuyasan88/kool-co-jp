@@ -25,3 +25,6 @@ infrastructure/lambda/*.zip
 *.njsproj
 *.sln
 *.sw?
+
+# CloudFront 設定バックアップ（apply-legal-cors.ps1 が生成）
+infrastructure/cloudfront/backups/

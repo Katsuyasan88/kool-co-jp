@@ -37,6 +37,14 @@ const Service = () => {
         "お坊さんだけが返信できるSNSアプリ"
       ],
       highlights: "全サービスを自社で企画・設計・実装。クローズしたプロジェクトからも、リアルタイム通信や大規模データ処理の深い知見を蓄積しています。",
+      // 現在公開中の自社プロダクト。公式LPへの内部リンクを持つ
+      product: {
+        name: "ガチャちょう",
+        status: "App Storeで公開中（iOS）",
+        desc: "カプセルトイの台紙を撮るだけで、AIが商品情報とラインナップを読み取ってコレクション帳をつくるアプリ。",
+        path: "/gachacho",
+        icon: "/gachacho/icon-512.webp"
+      },
       query: "own-product"
     },
     // ... (以下同様の構造)
@@ -111,6 +119,32 @@ const Service = () => {
                     「{services[0].highlights}」
                   </p>
                 </div>
+                {services[0].product && (
+                  <Link
+                    to={services[0].product.path}
+                    className="group/product flex items-center gap-4 bg-white border border-primary/20 rounded-2xl p-4 md:p-5 mb-6 hover:border-primary hover:shadow-lg transition-all"
+                  >
+                    <img
+                      src={services[0].product.icon}
+                      alt=""
+                      width={56}
+                      height={56}
+                      loading="lazy"
+                      className="w-14 h-14 rounded-xl shrink-0 shadow-sm"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[11px] font-bold text-primary tracking-widest uppercase leading-snug">
+                        {services[0].product.status}
+                      </p>
+                      <p className="font-bold text-lg leading-snug">{services[0].product.name}</p>
+                      <p className="text-sm text-text-muted leading-relaxed">{services[0].product.desc}</p>
+                      <span className="inline-flex items-center gap-1 text-sm font-bold text-primary mt-1">
+                        公式ページを見る <ArrowRight size={14} className="group-hover/product:translate-x-1 transition-transform" />
+                      </span>
+                    </div>
+                  </Link>
+                )}
+                <p className="text-xs font-bold text-primary tracking-widest uppercase mb-2">Other Projects</p>
                 <ul className="space-y-2">
                   {services[0].items.map((item, i) => (
                     <li key={i} className="flex items-center gap-3">
