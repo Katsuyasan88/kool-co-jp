@@ -26,6 +26,7 @@ const Footer = () => {
           <div className="lg:col-span-2 lg:ml-auto">
             <h4 className="font-bold text-sm uppercase tracking-widest text-primary mb-4 underline decoration-secondary decoration-2 underline-offset-8">Services</h4>
             <ul className="space-y-2 text-text-muted font-medium">
+              <li><Link to="/gachacho" className="hover:text-primary transition-colors">ガチャちょう（iOSアプリ）</Link></li>
               <li><Link to="/service" className="hover:text-primary transition-colors">自社プロダクト開発</Link></li>
               <li><Link to="/service" className="hover:text-primary transition-colors">新規事業支援</Link></li>
               <li><Link to="/service" className="hover:text-primary transition-colors">研修・メンタリング</Link></li>
@@ -75,6 +76,9 @@ const Footer = () => {
           <div className="flex gap-4 md:gap-8 items-center flex-wrap justify-center">
             <Link to="/privacy" className="text-xs font-bold text-text-muted hover:text-primary transition-colors flex items-center gap-2">
               <Shield size={14} /> Privacy Policy
+            </Link>
+            <Link to="/gachacho/terms" className="text-xs font-bold text-text-muted hover:text-primary transition-colors">
+              ガチャちょう利用規約
             </Link>
             <Link to="/legal" className="text-xs font-bold text-text-muted hover:text-primary transition-colors">
               特定商取引法に基づく表記

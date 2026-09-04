@@ -17,9 +17,22 @@ export default {
         "text-muted": '#64748b',
         "bg-soft": '#f8fafc',
         "border": '#e2e8f0',
+        // ガチャちょう（自社アプリ）LP専用トークン。アプリのストア素材・アイコンの配色に合わせる
+        gachacho: {
+          paper: '#fbf5f2',      // 台紙・手帳の紙色
+          blush: '#fde1d8',      // 淡いピンク（面）
+          rose: '#da8287',       // アイコンのメインピンク
+          'rose-deep': '#be666b',// 濃いピンク（テキスト・ホバー）
+          ink: '#4a3f3c',        // 本文の茶系ダーク
+          mute: '#8a7a74',       // サブテキスト
+          line: '#e5d8d2',       // 罫線・境界
+          gold: '#d9a54a',       // ガチャのハンドル・金具
+          lilac: '#8e7fb8',      // ストア素材の紫アクセント
+        },
       },
       fontFamily: {
         main: ['Inter', 'Noto Sans JP', 'sans-serif'],
+        rounded: ['"Zen Maru Gothic"', 'Noto Sans JP', 'sans-serif'],
       },
       animation: {
         'spin-slow': 'spin 8s linear infinite',
