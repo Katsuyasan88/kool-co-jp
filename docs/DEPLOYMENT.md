@@ -73,11 +73,11 @@ curl -sI -H "Origin: https://example.com" https://smartthanks.world/gachacho/leg
 - `HTTP/1.1 200` または `HTTP/2 200`
 - `Content-Type: application/json; charset=utf-8`
 - `Access-Control-Allow-Origin: *`（`Managed-SimpleCORS` は `Origin` ヘッダーがある要求にだけ付与する。`Origin` なしの要求に付かないのは正常）
-- 本文の `documentVersion` が配信予定の版（例: `1.0.1`）と一致すること
+- 本文の `documentVersion` が配信予定の版（例: `1.1`）と一致すること
 
 ```bash
 curl -s https://smartthanks.world/gachacho/legal/current.json | python -c "import sys,json; print(json.load(sys.stdin)['documentVersion'])"
-curl -sI https://smartthanks.world/gachacho/legal/versions/1.0.1.json | grep -i "content-type"
+curl -sI https://smartthanks.world/gachacho/legal/versions/1.1.json | grep -i "content-type"
 ```
 
 ### 5.4 CORS 設定だけを戻す（Rollback）
