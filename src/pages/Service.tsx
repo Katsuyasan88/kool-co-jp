@@ -43,7 +43,7 @@ const Service = () => {
         status: "App Storeで公開中（iOS）",
         desc: "カプセルトイの台紙を撮るだけで、AIが商品情報とラインナップを読み取ってコレクション帳をつくるアプリ。",
         path: "/gachacho",
-        icon: "/gachacho/icon-512.webp"
+        icon: "/gachacho/icon-1.0.3-512.webp"
       },
       query: "own-product"
     },

@@ -17,22 +17,26 @@ export default {
         "text-muted": '#64748b',
         "bg-soft": '#f8fafc',
         "border": '#e2e8f0',
-        // ガチャちょう（自社アプリ）LP専用トークン。アプリのストア素材・アイコンの配色に合わせる
-        gachacho: {
-          paper: '#fbf5f2',      // 台紙・手帳の紙色
-          blush: '#fde1d8',      // 淡いピンク（面）
-          rose: '#da8287',       // アイコンのメインピンク
-          'rose-deep': '#be666b',// 濃いピンク（テキスト・ホバー）
-          ink: '#4a3f3c',        // 本文の茶系ダーク
-          mute: '#8a7a74',       // サブテキスト
-          line: '#e5d8d2',       // 罫線・境界
-          gold: '#d9a54a',       // ガチャのハンドル・金具
-          lilac: '#8e7fb8',      // ストア素材の紫アクセント
+        // ガチャちょう（自社アプリ）LP専用トークン（T-072 / 1.0.3 Nature）。
+        // 生成りの紙・深緑・セージ・くすんだ青を基調にする。LP以外（primary / Navbar / Footer / 法務ページ）からは参照しない
+        'gachacho-nature': {
+          paper: '#FAF7F0',      // LPの主背景。余白の大部分
+          surface: '#FFFDFA',    // 記録・情報欄の面
+          forest: '#183F38',     // 見出し、リンク、重要な短い文字
+          ink: '#303D36',        // 本文
+          muted: '#59655D',      // 補足本文。opacityでさらに薄くしない
+          sage: '#B8C3AD',       // 葉やテープなど小面積の装飾
+          'sage-soft': '#E8EDE3',// 末尾CTA、短い補助領域
+          blue: '#718596',       // 手帳の色とつながる装飾。小さい本文には使わない
+          line: '#D9DED3',       // 罫線・装飾境界
+          pink: '#D9A5A7',       // 画像内のピンクとのつなぎ。小さなアクセントのみ
         },
       },
       fontFamily: {
         main: ['Inter', 'Noto Sans JP', 'sans-serif'],
         rounded: ['"Zen Maru Gothic"', 'Noto Sans JP', 'sans-serif'],
+        // ガチャちょうLPのh1と短い締めの見出しだけで使う日本語明朝。外部フォントは追加せず、未搭載時はserifへフォールバック
+        'gachacho-display': ['"Yu Mincho"', 'YuMincho', '"Hiragino Mincho ProN"', 'serif'],
       },
       animation: {
         'spin-slow': 'spin 8s linear infinite',
