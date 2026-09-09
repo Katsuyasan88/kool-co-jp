@@ -6,7 +6,7 @@
 - 仕様: `C:/Users/user/AIProjects/CapCole/design/exploration/v1.0.3/lp-nature-handoff/LP_REVISION_SPEC.md`、同 `ASSET_MANIFEST.json`
 - ブランチ: `feature/gachacho-privacy-support`（HEAD `69960e3`）
 - 追記（2026-09-09 同日）: ユーザー指示により Hero 画像を添付のネイチャー調イラスト（受け渡し一式の 04 原本と同一）へ差し替え、「（無料）」表記を復活。さらに Hero の見出し・副見出しの視覚表示を外して画像を幅いっぱいに拡大し、画像の余白が紙色へ溶け込むよう色調整。§2・§3・§4・§5・§8・§9 を更新
-- 状態: **ローカル実装・検証・レビュー提出まで**。commit / push / 本番 deploy は未実施（旧文書の自動commit・deploy手順は実行していない）
+- 状態: **本番公開済み（2026-09-09）**。ユーザーの表示採否 OK と公開承認（App Store 1.0.3 未公開のまま LP を先行させる判断を含む）を受け、commit `efaa1a4` を deploy。詳細は §12
 - 触っていないもの: CapCole のアプリ／backend／法務本文、`public/gachacho/legal/**`、`/terms` リダイレクト、`App.tsx` のルーティング、Navbar / Footer、primary 色、ストア管理画面、OAuth設定、AWS
 
 ## 1. 着手前の確認
@@ -189,3 +189,42 @@ rollback: 直前の commit（`69960e3`）で `npm run build` した成果物を�
 - ローカル: `npm run dev` → `http://localhost:5173/gachacho`（レビュー時点で起動中）
 - スクショ: `reviews/Claude Code/20260909_T072_screenshots/` の `gachacho_1440_full.webp`（PC）、`gachacho_390_full.webp`・`gachacho_320_full.webp`（モバイル）、`gachacho_1440_hero.webp`・`gachacho_320_hero.webp`（Hero 拡大）
 - 確認してほしい点: Hero イラストの紙色への溶け込みと四辺のマスク、見出しを画像内文言に任せる構成の採否、alt の扱い（指摘2）、サイト公開の判断（App Store 1.0.3 公開状況・Android 準備中・無料表記の実状態との照合は公開直前に実施）
+
+## 12. 公開工程（2026-09-09）
+
+### 公開直前の照合
+
+| 項目 | 結果 |
+|---|---|
+| App Store `id6798359468` の公開状況 | 最新バージョン **1.0.2**（1日前リリース）、価格 無料、iPhone のみ。**1.0.3 は未公開** |
+| ユーザー判断 | 上記を報告のうえ「先行させてOK」の明示承認を取得。1.0.3 用のストア画像と「＋で所持数を記録」「日付ごとのリスト／月ごとの記録」の説明を、1.0.3 の一般公開前に LP へ先行掲載する |
+| 無料表記 | App Store の「無料」と一致 |
+| Android | 公開状況は未確認のため「Android版は準備中です。」を維持 |
+| ブランチ | `feature/gachacho-privacy-support`。`origin/main` との差は空のマージコミット2件のみ（ファイル差分なし）のため main の取り込みは不要 |
+
+### 実施内容
+
+| # | 手順 | 結果 |
+|---|---|---|
+| 1 | 検証スクショを PNG → WebP へ変換（リポジトリ容量のため）、レビューmd の参照を更新 | 13点 |
+| 2 | `git commit` `efaa1a4`「feat: ガチャちょうLPを1.0.3ストア画像とNature基調へ改修（T-072）」 | 対象: `src/index.css`、`src/pages/Gachacho.tsx`、`src/pages/Service.tsx`、`tailwind.config.js`、`public/gachacho/*-1.0.3-*.webp`（14点）、`docs/IMPLEMENTATION_PROMPT.md`、本レビューmd、スクショ。`.claude/`・`reviews/Codex/` は含めない |
+| 3 | `git push -u origin feature/gachacho-privacy-support` | `69960e3..efaa1a4` |
+| 4 | `.\infrastructure\scripts\deploy.ps1` | Build → assets sync（旧ハッシュ chunk を削除、新 chunk 配置）→ 静的ファイル sync（新規画像14点を配置。旧 `store-0*.webp`・`icon-512.webp` は `dist` に残るため削除されない）→ 法務JSON（`application/json; charset=utf-8`、内容変更なし）→ `index.html` → CloudFront Invalidation `/*`（ID `I9AC80NNNN24ZVSE5I8J2Q6ZM9`）。`Deployment complete!` |
+| 5 | deploy tag | `deploy/20260909-t072` を `efaa1a4` に付与し push |
+
+### 公開後確認（Invalidation `Completed` 後、`Cache-Control: no-cache` で取得）
+
+| URL | 結果 |
+|---|---|
+| `/gachacho` `/gachacho/terms` `/privacy` `/terms` `/service` | 200、`index.html`（2725B）が新 `index-Du4aEH6J.js` / `index-LWaStrV-.css` を参照 |
+| `/assets/Gachacho-BKW4H3o-.js` | 200。「集めて、見せ合う。」「hero-nature-1.0.3」「iPhone向けに配信中（無料）」を含む |
+| `/gachacho/icon-1.0.3-512.webp`、`hero-nature-1.0.3-1440.webp`、`store-0{1,2,3}-*-1.0.3-720.webp` | 200、`image/webp`。バイト数はローカルと一致（5104 / 96826 / 130092 / 142242 / 88188） |
+| `/gachacho/legal/current.json` | 200、`application/json; charset=utf-8`（28373B。文書版は今回変更なし） |
+| 本番描画（headless Chrome、1440 / 390） | 横スクロールなし。Hero イラスト・Nature 配色・使い方3枚・末尾CTA を確認。`production_1440_full.webp`、`production_390_full.webp`、`production_1440_hero.webp` |
+
+### 残る事項
+
+- 実機 iOS Safari / Android Chrome での本番確認は未実施（ユーザーの実機確認を推奨。特に Hero の `mix-blend-multiply` とマスク）
+- App Store 1.0.3 の一般公開後に、LP の説明と実アプリの整合を再確認する。1.0.3 公開までは LP が先行している状態
+- rollback が必要な場合は `deploy/20260906-t059-legal-1.3`（直前の公開）へ checkout して `deploy.ps1`。互換性 floor（規約URL・法務JSON）は両版とも満たす
+- T-072 / UT-046 の完了判定（`[x]` 化・アーカイブ）は CapCole 側の Codex 判断に委ねる
