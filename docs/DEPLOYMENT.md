@@ -95,8 +95,9 @@ curl -sI https://smartthanks.world/gachacho/legal/versions/1.1.json | grep -i "c
   1. `assets/`（ハッシュ付き。`--delete`）
   2. 画像・sitemap 等の一般ファイル（`index.html` と `gachacho/legal/*` を除外。`--delete`）
   3. `gachacho/legal/*`（`application/json; charset=utf-8` を明示。`--delete` なし。版別JSONは残す）
-  4. `index.html`（切替点。no-cache）
-  5. CloudFront Invalidation `/*`
+  4. ページ別 HTML（OGP 用。`scripts/generate-page-html.mjs` が `dist/pages/gachacho.html` を生成し、S3 のキー `gachacho` へ `text/html` で配置。no-cache。静的ファイルの sync ではこのキーを除外し `--delete` で消えないようにする）
+  5. `index.html`（切替点。no-cache）
+  6. CloudFront Invalidation `/*`
 - 副作用なしテスト: `.\infrastructure\scripts\tests\deploy.stubtest.ps1`（aws を stub に差し替え、途中失敗で停止することと順序を検証。`npm run build` は実行される）
 - 公開時は公開したコミットへ tag を付けてください（例: `git tag deploy/20260904-t059 && git push origin deploy/20260904-t059`）。互換性を保つ rollback 先になります。
 

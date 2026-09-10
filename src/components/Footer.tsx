@@ -26,7 +26,7 @@ const Footer = () => {
           <div className="lg:col-span-2 lg:ml-auto">
             <h4 className="font-bold text-sm uppercase tracking-widest text-primary mb-4 underline decoration-secondary decoration-2 underline-offset-8">Services</h4>
             <ul className="space-y-2 text-text-muted font-medium">
-              <li><Link to="/gachacho" className="hover:text-primary transition-colors">ガチャちょう（iOSアプリ）</Link></li>
+              <li><Link to="/gachacho" className="hover:text-primary transition-colors">ガチャちょう（iOS / Androidアプリ）</Link></li>
               <li><Link to="/service" className="hover:text-primary transition-colors">自社プロダクト開発</Link></li>
               <li><Link to="/service" className="hover:text-primary transition-colors">新規事業支援</Link></li>
               <li><Link to="/service" className="hover:text-primary transition-colors">研修・メンタリング</Link></li>

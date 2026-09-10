@@ -1,0 +1,13 @@
+{
+  "_comment": "ページ別の <title> / description / OGP。SPA のためクローラー向けには scripts/generate-page-html.mjs がビルド時に静的 HTML（dist/pages/*.html）を生成し、deploy.ps1 が S3 のパス（例: キー gachacho）へ配置する。実行時の document.title も同じ値を使う。",
+  "gachacho": {
+    "path": "/gachacho",
+    "title": "ガチャちょう｜集めて、見せ合う。シール帳みたいなガチャコレクション帳アプリ",
+    "description": "カプセルトイの台紙を撮ると、AIが商品情報とラインナップを読み取って、あなただけのコレクション帳に。持っているものも、ダブりも、集めた日の思い出も。友だちとお互いのアプリを開いて、好きなものを見せ合おう。株式会社SmartThanksが提供する無料アプリ。",
+    "ogTitle": "ガチャちょう｜集めて、見せ合う。",
+    "ogImage": "/gachacho/og-image-1.0.3.jpg",
+    "ogImageWidth": 1200,
+    "ogImageHeight": 630,
+    "ogImageType": "image/jpeg"
+  }
+}

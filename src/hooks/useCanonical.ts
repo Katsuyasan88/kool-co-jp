@@ -9,9 +9,12 @@ const SITE_ORIGIN = 'https://smartthanks.world';
  */
 const useCanonical = (path: string) => {
   useEffect(() => {
+    // ビルド時に生成した静的 HTML（OGP 用）が同じ canonical を持つ場合は二重に追加しない
+    const href = `${SITE_ORIGIN}${path}`;
+    if (document.querySelector(`link[rel="canonical"][href="${href}"]`)) return;
     const link = document.createElement('link');
     link.rel = 'canonical';
-    link.href = `${SITE_ORIGIN}${path}`;
+    link.href = href;
     document.head.appendChild(link);
     return () => {
       link.remove();

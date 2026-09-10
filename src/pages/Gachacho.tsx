@@ -20,12 +20,16 @@ import {
 } from 'lucide-react';
 import usePageTitle from '../hooks/usePageTitle.ts';
 import useCanonical from '../hooks/useCanonical.ts';
+import pageMeta from '../data/pageMeta.json';
 
 // OAuth 同意画面・App Store と同じアプリ名。表記ゆれを起こさないため定数にする
 const APP_NAME = 'ガチャちょう';
 const APP_STORE_URL = 'https://apps.apple.com/jp/app/id6798359468';
 // Apple 公式バッジ（JP / Black lockup）。Apple のガイドラインに従い、改変せず最小高さ 40px と余白を確保して使う
 const APP_STORE_BADGE = '/gachacho/app-store-badge-jp.svg';
+// Google Play（Android）。公式バッジ（JP）を Google の配布 zip からそのまま使用し、改変せず Apple バッジと同じ高さで並べる
+const GOOGLE_PLAY_URL = 'https://play.google.com/store/apps/details?id=jp.co.kool.gachacho';
+const GOOGLE_PLAY_BADGE = '/gachacho/google-play-badge-jp.svg';
 // 手帳アイコン（version 1.0.3 で版付きファイルに更新）
 const APP_ICON = '/gachacho/icon-1.0.3-512.webp';
 // App Store 掲載画像（version 1.0.3）。ストア用の完成画像を回転・トリミングせずそのまま使う。
@@ -106,6 +110,32 @@ const Phrase = ({ text }: { text: string }) => (
   </>
 );
 
+// App Store / Google Play の公式バッジ。どちらも改変せず、同じ高さ（48px / 60px）で並べる
+const StoreBadges = ({ lazy = false, className = '' }: { lazy?: boolean; className?: string }) => (
+  <div className={`flex flex-wrap items-center gap-x-4 gap-y-3 ${className}`}>
+    <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className={BADGE_LINK_CLASS}>
+      <img
+        src={APP_STORE_BADGE}
+        alt="App Storeでダウンロード"
+        width={163}
+        height={60}
+        loading={lazy ? 'lazy' : undefined}
+        className="h-12 md:h-[60px] w-auto"
+      />
+    </a>
+    <a href={GOOGLE_PLAY_URL} target="_blank" rel="noopener noreferrer" className={BADGE_LINK_CLASS}>
+      <img
+        src={GOOGLE_PLAY_BADGE}
+        alt="Google Playで手に入れよう"
+        width={180}
+        height={53}
+        loading={lazy ? 'lazy' : undefined}
+        className="h-12 md:h-[60px] w-auto"
+      />
+    </a>
+  </div>
+);
+
 // 節の見出しに添える小さなラベル。葉のアイコンはセージで、装飾は文章の外側にだけ置く
 const Eyebrow = ({ children }: { children: string }) => (
   <p className="flex items-center gap-2 text-sm font-bold tracking-[0.2em] uppercase text-gachacho-nature-muted mb-3">
@@ -115,7 +145,8 @@ const Eyebrow = ({ children }: { children: string }) => (
 );
 
 const Gachacho = () => {
-  usePageTitle(APP_NAME);
+  // ビルド時に生成する静的 HTML（OGP 用）と同じタイトル。会社名よりサービス名を前に出す
+  usePageTitle(pageMeta.gachacho.title, false, true);
   useCanonical('/gachacho');
   const reduceMotion = useReducedMotion();
 
@@ -169,7 +200,7 @@ const Gachacho = () => {
               />
               <div className="text-left min-w-0 [overflow-wrap:anywhere]">
                 <p className="text-sm font-bold tracking-[0.15em] uppercase text-gachacho-nature-muted leading-snug">
-                  iOS App by SmartThanks
+                  iOS / Android App by SmartThanks
                 </p>
                 <p className="font-rounded font-bold text-2xl md:text-3xl leading-tight text-gachacho-nature-forest">
                   {APP_NAME}
@@ -182,20 +213,10 @@ const Gachacho = () => {
                 '持っているものも、ダブりも、集めた日の思い出も。友だちとお互いのアプリを開いて、好きなものを見せ合おう。'}
             </p>
 
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4">
-              <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className={BADGE_LINK_CLASS}>
-                <img
-                  src={APP_STORE_BADGE}
-                  alt="App Storeでダウンロード"
-                  width={163}
-                  height={60}
-                  className="h-12 md:h-[60px] w-auto"
-                />
-              </a>
-              <p className="text-sm text-gachacho-nature-muted leading-relaxed text-left">
-                iPhone向けに配信中（無料）。
-                <br className="sm:hidden" />
-                Android版は準備中です。
+            <div className="flex flex-col items-start md:items-center gap-4">
+              <StoreBadges className="justify-start md:justify-center" />
+              <p className="text-sm text-gachacho-nature-muted leading-relaxed text-left md:text-center">
+                iPhone / Android向けに配信中（無料）。
               </p>
             </div>
           </motion.div>
@@ -358,7 +379,11 @@ const Gachacho = () => {
                   <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className={`${LINK_CLASS} break-all`}>
                     App Store（iPhone）
                   </a>
-                  <span className="block text-sm text-gachacho-nature-muted mt-1">Android版は準備中です。</span>
+                  <span className="block">
+                    <a href={GOOGLE_PLAY_URL} target="_blank" rel="noopener noreferrer" className={`${LINK_CLASS} break-all`}>
+                      Google Play（Android）
+                    </a>
+                  </span>
                 </dd>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 py-4">
@@ -415,16 +440,7 @@ const Gachacho = () => {
             <p className="text-base md:text-lg leading-[1.8] mb-8">
               {APP_NAME}で、集める時間も、見せ合う時間も楽しもう。
             </p>
-            <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className={BADGE_LINK_CLASS}>
-              <img
-                src={APP_STORE_BADGE}
-                alt="App Storeでダウンロード"
-                width={163}
-                height={60}
-                loading="lazy"
-                className="h-12 md:h-[60px] w-auto"
-              />
-            </a>
+            <StoreBadges lazy className="justify-center" />
           </motion.div>
         </div>
       </section>

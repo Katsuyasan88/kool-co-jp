@@ -228,3 +228,79 @@ rollback: 直前の commit（`69960e3`）で `npm run build` した成果物を�
 - App Store 1.0.3 の一般公開後に、LP の説明と実アプリの整合を再確認する。1.0.3 公開までは LP が先行している状態
 - rollback が必要な場合は `deploy/20260906-t059-legal-1.3`（直前の公開）へ checkout して `deploy.ps1`。互換性 floor（規約URL・法務JSON）は両版とも満たす
 - T-072 / UT-046 の完了判定（`[x]` 化・アーカイブ）は CapCole 側の Codex 判断に委ねる
+
+## 13. Google Play バッジの追加（2026-09-09、ローカルのみ・未commit / 未deploy）
+
+- 指示: Android 審査を進めているため、Google Play の公式バッジ（JP「で手に入れよう」）と Play ストアリンクを LP へ追加する。今回は **ローカル変更まで**（commit / push / deploy なし）
+- ストア URL: `https://play.google.com/store/apps/details?id=jp.co.kool.gachacho`
+
+### 変更ファイル
+
+| ファイル | 変更内容 |
+|---|---|
+| `public/gachacho/google-play-badge-jp.svg` | 新規。Google 配布の `Google Play Badge guidelines.zip`（`Get it on Google Play Badges/Digital/svg/GetItOnGooglePlay_Badge_Print_color_Japanese.svg`、180×53.33）をそのまま配置。改変なし |
+| `src/pages/Gachacho.tsx` | `GOOGLE_PLAY_URL` / `GOOGLE_PLAY_BADGE` を追加。App Store / Google Play の公式バッジを同じ高さ（48px / 60px）で並べる `StoreBadges` を Hero と末尾CTAで使用。情報欄「配信」に Google Play（Android）リンクを追加し「Android版は準備中です。」を削除。配信補足を「iPhone / Android向けに配信中（無料）。」、ラベルを「iOS / Android App by SmartThanks」へ |
+
+### 検証
+
+| 項目 | 結果 |
+|---|---|
+| `npm run lint` / `npm run build` / `git diff --check` | すべて exit 0 |
+| 1440 / 390 / 320px | 横スクロールなし。バッジ2つは PC で横並び、320px では縦に折り返す（`flex-wrap`）。`local_gp_{1440,390,320}_full.webp`、`local_gp_{1440,390,320}_hero.webp`、`local_gp_390_bottom.webp` |
+| Play ストア URL | 2026-09-09 時点で **HTTP 404**（審査中・未公開）。LP のリンク先はまだ到達できない |
+
+### 公開時の条件・残る事項
+
+- **Google Play で一般公開が確認できてから deploy する**。それまでは本番（`deploy/20260909-t072`）の「Android版は準備中です。」を維持する。公開前に Play ストア URL が 200 で開くこと、無料表記、パッケージ名 `jp.co.kool.gachacho` を照合する
+- LP 以外の表記もユーザー指示で更新（ローカルのみ）: `src/pages/Service.tsx` のガチャちょう紹介を「iOS/Androidアプリ公開中」（スマホ幅で3行に折れるためユーザー指示で短縮。PC も共通。ラベルとアプリ名の間に `mb-1.5`（6px）を追加）、`src/components/Footer.tsx` のリンクを「ガチャちょう（iOS / Androidアプリ）」へ。これらも Google Play 公開確認後に LP と同時に deploy する
+- Google Play バッジのガイドライン（周囲の余白・最小高さ・改変禁止）は Apple バッジと同じ扱い（`p-3` の余白、高さ 48px 以上、改変なし）で満たしている想定。ガイドライン本文（zip 内 PDF なし）との照合はユーザー側で確認
+- Android 版の実機（Android Chrome）表示確認は未実施
+
+## 14. `/gachacho` のページ別 OGP・タイトル（2026-09-10、ローカルのみ・未commit / 未deploy）
+
+- 指示: ガチャちょうのページに OGP を設定し、タイトル・説明で会社名よりサービス名を前に出す
+- 前提: このサイトは SPA で、SNS / LINE / Slack のクローラーは JS を実行せず `index.html` の `<head>` だけを読む。React 側で meta を書き換えても OGP には反映されないため、**ビルド時にページ別の静的 HTML を生成し、S3 のキー `gachacho` に置いて `/gachacho` をそのオブジェクトで直接返す**方式にした。CloudFront の設定変更（Function 追加やビヘイビア変更）は不要（origin は S3 REST エンドポイント、`/gachacho` はキー `gachacho` にそのまま対応する）
+
+### 変更ファイル
+
+| ファイル | 変更内容 |
+|---|---|
+| `src/data/pageMeta.json` | 新規。`/gachacho` の title / description / og:title / og:image を一元定義（ビルド時の静的 HTML と実行時の `document.title` の両方が参照） |
+| `scripts/generate-page-html.mjs` | 新規。`dist/index.html` を元に `<title>`・description・OGP ブロック・canonical だけを差し替え、`dist/pages/gachacho.html` を書き出す。script / link（ハッシュ付き chunk）は index.html と同一 |
+| `package.json` | `build` を `tsc -b && vite build && node scripts/generate-page-html.mjs` へ |
+| `public/gachacho/og-image-1.0.3.jpg` | 新規。Hero イラスト原本（`04-nature-reference.png`）を中央 1669×876 に切り出し 1200×630 へ縮小（JPEG 品質88、約114KB）。OG 画像は WebP 非対応のクローラーがあるため JPEG |
+| `src/hooks/usePageTitle.ts` | 第3引数 `fullTitle` を追加（title をそのまま `document.title` にする）。既存呼び出しは変更なし |
+| `src/hooks/useCanonical.ts` | 静的 HTML に同じ canonical がある場合は二重追加しない |
+| `src/pages/Gachacho.tsx` | `usePageTitle(pageMeta.gachacho.title, false, true)` |
+| `infrastructure/scripts/deploy.ps1` | 静的 sync の除外に `pages/*` と S3 キー `gachacho` を追加（`--delete` でページ HTML が消えないようにする）。法務JSONの後・`index.html` の前に「Upload page HTML」ステップを追加（`dist/pages/gachacho.html` → `s3://kool-co-jp-web/gachacho`、`text/html; charset=utf-8`、no-cache） |
+| `infrastructure/scripts/tests/deploy.stubtest.ps1` | 呼び出し回数 5 → 6、ページ HTML の Content-Type と順序、sync の除外を検証する assert を追加 |
+| `docs/DEPLOYMENT.md` | §6.1 の配布順にページ別 HTML を追加 |
+
+### 設定した内容
+
+| 項目 | 値 |
+|---|---|
+| `<title>` / `document.title` | ガチャちょう｜集めて、見せ合う。シール帳みたいなガチャコレクション帳アプリ |
+| description / og:description | カプセルトイの台紙を撮ると、AIが商品情報とラインナップを読み取って、あなただけのコレクション帳に。持っているものも、ダブりも、集めた日の思い出も。友だちとお互いのアプリを開いて、好きなものを見せ合おう。株式会社SmartThanksが提供する無料アプリ。 |
+| og:title / twitter:title | ガチャちょう｜集めて、見せ合う。 |
+| og:image / twitter:image | `https://smartthanks.world/gachacho/og-image-1.0.3.jpg`（1200×630、`summary_large_image`） |
+| og:url / canonical | `https://smartthanks.world/gachacho` |
+| og:site_name / og:locale | 株式会社SmartThanks / ja_JP |
+
+### 検証
+
+| 項目 | 結果 |
+|---|---|
+| `npm run lint` / `npm run build` / `git diff --check` | exit 0。build 末尾で `generate-page-html: /gachacho -> dist/pages/gachacho.html` |
+| 生成 HTML の script / stylesheet / modulepreload | `dist/index.html` と完全一致（diff なし） |
+| deploy 副作用なしテスト `deploy.stubtest.ps1` | ALL PASSED（aws 6回、ページ HTML が `text/html` で `index.html` の前、sync が キー `gachacho` を除外、途中失敗で停止） |
+| S3 / CloudFront を模した静的配信（`/gachacho` → `pages/gachacho.html`、それ以外は `index.html` フォールバック）でのクローラー視点（JS なし） | `/gachacho` の `<title>`・og:title・og:image がページ用。`/service`・`/gachacho/`（末尾スラッシュ）は従来どおり汎用 `index.html` |
+| 同配信での実行時（React 起動後） | `document.title` が静的 HTML と同じ文字列、canonical は1本のみ、h1・バッジ（2枚）を描画 |
+| OG 画像 | 200 / `image/jpeg` / 116,558B。見出し文字が切れていないことを目視 |
+
+### 公開時の条件・残る事項
+
+- deploy は Google Play 公開確認後に §13 とまとめて実施する。deploy 後は `curl -I https://smartthanks.world/gachacho` で `content-type: text/html; charset=utf-8` と、`curl https://smartthanks.world/gachacho | grep og:` でページ用 OGP を確認する。X / Facebook / LINE の OGP キャッシュは各ツール（Card validator 等）で更新が必要な場合がある
+- `/gachacho/`（末尾スラッシュ）と他ページの OGP は汎用のまま。ページを増やす場合は `pageMeta.json` に追加し、`deploy.ps1` の Upload page HTML に対応するキーの `aws s3 cp` を足す
+- サイト共通の `og-image.webp`（トップ用）は従来どおり未作成（CLAUDE.md の既知課題）
+- 旧 tag（`deploy/20260909-t072` 以前）へ rollback する場合、旧 `deploy.ps1` の sync `--delete` は除外設定を持たないため S3 のキー `gachacho` を削除し、`/gachacho` は `index.html` フォールバック（汎用 OGP）に戻る。表示自体は壊れない

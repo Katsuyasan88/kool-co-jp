@@ -40,7 +40,7 @@ const Service = () => {
       // 現在公開中の自社プロダクト。公式LPへの内部リンクを持つ
       product: {
         name: "ガチャちょう",
-        status: "App Storeで公開中（iOS）",
+        status: "iOS/Androidアプリ公開中",
         desc: "カプセルトイの台紙を撮るだけで、AIが商品情報とラインナップを読み取ってコレクション帳をつくるアプリ。",
         path: "/gachacho",
         icon: "/gachacho/icon-1.0.3-512.webp"
@@ -133,7 +133,7 @@ const Service = () => {
                       className="w-14 h-14 rounded-xl shrink-0 shadow-sm"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[11px] font-bold text-primary tracking-widest uppercase leading-snug">
+                      <p className="text-[11px] font-bold text-primary tracking-widest uppercase leading-snug mb-1.5">
                         {services[0].product.status}
                       </p>
                       <p className="font-bold text-lg leading-snug">{services[0].product.name}</p>
