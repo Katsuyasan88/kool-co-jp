@@ -229,7 +229,7 @@ rollback: 直前の commit（`69960e3`）で `npm run build` した成果物を�
 - rollback が必要な場合は `deploy/20260906-t059-legal-1.3`（直前の公開）へ checkout して `deploy.ps1`。互換性 floor（規約URL・法務JSON）は両版とも満たす
 - T-072 / UT-046 の完了判定（`[x]` 化・アーカイブ）は CapCole 側の Codex 判断に委ねる
 
-## 13. Google Play バッジの追加（2026-09-09、ローカルのみ・未commit / 未deploy）
+## 13. Google Play バッジの追加（2026-09-09 ローカル実装 → 2026-09-10 公開。§15）
 
 - 指示: Android 審査を進めているため、Google Play の公式バッジ（JP「で手に入れよう」）と Play ストアリンクを LP へ追加する。今回は **ローカル変更まで**（commit / push / deploy なし）
 - ストア URL: `https://play.google.com/store/apps/details?id=jp.co.kool.gachacho`
@@ -256,7 +256,7 @@ rollback: 直前の commit（`69960e3`）で `npm run build` した成果物を�
 - Google Play バッジのガイドライン（周囲の余白・最小高さ・改変禁止）は Apple バッジと同じ扱い（`p-3` の余白、高さ 48px 以上、改変なし）で満たしている想定。ガイドライン本文（zip 内 PDF なし）との照合はユーザー側で確認
 - Android 版の実機（Android Chrome）表示確認は未実施
 
-## 14. `/gachacho` のページ別 OGP・タイトル（2026-09-10、ローカルのみ・未commit / 未deploy）
+## 14. `/gachacho` のページ別 OGP・タイトル（2026-09-10 ローカル実装 → 同日公開。§15）
 
 - 指示: ガチャちょうのページに OGP を設定し、タイトル・説明で会社名よりサービス名を前に出す
 - 前提: このサイトは SPA で、SNS / LINE / Slack のクローラーは JS を実行せず `index.html` の `<head>` だけを読む。React 側で meta を書き換えても OGP には反映されないため、**ビルド時にページ別の静的 HTML を生成し、S3 のキー `gachacho` に置いて `/gachacho` をそのオブジェクトで直接返す**方式にした。CloudFront の設定変更（Function 追加やビヘイビア変更）は不要（origin は S3 REST エンドポイント、`/gachacho` はキー `gachacho` にそのまま対応する）
@@ -304,3 +304,43 @@ rollback: 直前の commit（`69960e3`）で `npm run build` した成果物を�
 - `/gachacho/`（末尾スラッシュ）と他ページの OGP は汎用のまま。ページを増やす場合は `pageMeta.json` に追加し、`deploy.ps1` の Upload page HTML に対応するキーの `aws s3 cp` を足す
 - サイト共通の `og-image.webp`（トップ用）は従来どおり未作成（CLAUDE.md の既知課題）
 - 旧 tag（`deploy/20260909-t072` 以前）へ rollback する場合、旧 `deploy.ps1` の sync `--delete` は除外設定を持たないため S3 のキー `gachacho` を削除し、`/gachacho` は `index.html` フォールバック（汎用 OGP）に戻る。表示自体は壊れない
+
+## 15. 公開工程 第2回（2026-09-10）: Google Play バッジ・Service/Footer 表記・ページ別 OGP
+
+### 公開直前の照合
+
+| 項目 | 結果 |
+|---|---|
+| Google Play `jp.co.kool.gachacho` | ユーザーから公開の連絡。`https://play.google.com/store/apps/details?id=jp.co.kool.gachacho` が **HTTP 200**（前日は 404） |
+| ブランチ | `origin/main` との差は空のマージコミット2件のみ。main の取り込み不要 |
+| ローカル検証 | §13・§14 のとおり（lint / build / diff --check / stub テスト ALL PASSED） |
+
+### 実施内容
+
+| # | 手順 | 結果 |
+|---|---|---|
+| 1 | `git commit` `b5d232a`「feat: ガチャちょうLPにGoogle Playバッジとページ別OGPを追加（T-072）」→ `git push` | `e76c595..b5d232a` |
+| 2 | `.\infrastructure\scripts\deploy.ps1` | Build（`generate-page-html: /gachacho -> dist/pages/gachacho.html`）→ assets → 静的ファイル（`google-play-badge-jp.svg`・`og-image-1.0.3.jpg` を新規配置）→ 法務JSON → **Upload page HTML**（`dist/pages/gachacho.html` → `s3://kool-co-jp-web/gachacho`）→ `index.html` → Invalidation `I8G85833HSFFEVFIHA18RVE6L5`。`Deployment complete!` |
+| 3 | deploy tag | `deploy/20260910-t072-android-ogp` を `b5d232a` に付与し push |
+
+補足: 初回の deploy 実行は出力を絞る `Select-String` の正規表現が不正で PowerShell がパイプライン構築時に失敗し、`deploy.ps1` 自体は実行されなかった（AWS 呼び出しなし）。ログをファイルへ出す形で再実行した。
+
+### 公開後確認（Invalidation `Completed` 後、`Cache-Control: no-cache`）
+
+| URL | 結果 |
+|---|---|
+| `/gachacho` | 200、`text/html; charset=utf-8`（4472B、S3 キー `gachacho`）。`<title>` がページ用、og:title「ガチャちょう｜集めて、見せ合う。」、og:image `og-image-1.0.3.jpg`、twitter:card `summary_large_image`、canonical `/gachacho` |
+| `/`・`/service`・`/gachacho/`・`/gachacho/terms` | 200、従来どおり汎用 `index.html`（`<title>株式会社SmartThanks</title>`） |
+| `/gachacho` と `/` が参照する chunk | 完全一致（ページ HTML と index.html は同じビルド） |
+| `/gachacho/og-image-1.0.3.jpg` | 200、`image/jpeg`、116,558B |
+| `/gachacho/google-play-badge-jp.svg` | 200、`image/svg+xml`、13,431B |
+| `/gachacho/legal/current.json` | 200、`application/json; charset=utf-8`（変更なし） |
+| Gachacho chunk / Service chunk | Play ストア URL、「iOS/Androidアプリ公開中」を含む |
+| 本番描画（headless Chrome） | `/gachacho` 1440 / 390 で横スクロールなし、Hero 下に App Store / Google Play バッジが並ぶ。`/service` 390 で「iOS/Androidアプリ公開中」1行。`production2_1440_full.webp`、`production2_1440_hero.webp`、`production2_390_full.webp`、`production2_service_390.webp` |
+
+### 残る事項
+
+- X / Facebook / LINE 側で以前の OGP がキャッシュされている場合は、各サービスのデバッガーで再取得が必要
+- 実機（iOS Safari / Android Chrome）での本番確認は未実施
+- rollback: `deploy/20260909-t072` へ checkout して `deploy.ps1` を実行すると、旧スクリプトの sync `--delete` が S3 キー `gachacho` を削除し、`/gachacho` は `index.html` フォールバック（汎用 OGP、Android 準備中表記）へ戻る。互換性 floor（規約URL・法務JSON）は維持される
+- T-072 / UT-046 の完了判定は CapCole 側の Codex 判断に委ねる
