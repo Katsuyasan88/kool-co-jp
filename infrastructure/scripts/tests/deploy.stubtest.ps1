@@ -24,7 +24,7 @@ exit /b 0
 "@
 Set-Content -Path (Join-Path $Work 'aws.cmd') -Value $stub -Encoding ascii
 
-$expectedOrder = @('s3 sync', 's3 sync', 's3 cp', 's3 cp', 'cloudfront create-invalidation')
+$expectedOrder = @('s3 sync', 's3 sync', 's3 cp', 's3 cp', 's3 cp', 'cloudfront create-invalidation')
 
 function Run-Deploy {
     param([string] $FailMatch)
@@ -51,16 +51,18 @@ function Assert {
     else { Write-Host "  FAIL  $Message" -ForegroundColor Red; $script:failures++ }
 }
 
-# ケース1: すべて成功 → 順序どおり 5 回呼ばれ、成功表示、exit 0
+# ケース1: すべて成功 → 順序どおり 6 回呼ばれ、成功表示、exit 0
 Write-Host 'Case 1: all succeed' -ForegroundColor Cyan
 $r = Run-Deploy -FailMatch ''
 Assert ($r.ExitCode -eq 0) "exit code 0 (actual $($r.ExitCode))"
-Assert ($r.Calls.Count -eq 5) "aws called 5 times (actual $($r.Calls.Count))"
+Assert ($r.Calls.Count -eq 6) "aws called 6 times (actual $($r.Calls.Count))"
 for ($i = 0; $i -lt $expectedOrder.Count; $i++) {
     Assert ($r.Calls.Count -gt $i -and $r.Calls[$i].StartsWith($expectedOrder[$i])) "call $($i+1) is '$($expectedOrder[$i])'"
 }
 Assert ($r.Calls.Count -ge 4 -and $r.Calls[2] -like '*gachacho/legal*' -and $r.Calls[2] -like '*application/json*') 'legal JSON uploaded with explicit Content-Type before index.html'
-Assert ($r.Calls.Count -ge 4 -and $r.Calls[3] -like '*index.html*') 'index.html is uploaded after assets, static files and legal JSON'
+Assert ($r.Calls.Count -ge 4 -and $r.Calls[3] -like '*pages/gachacho.html*' -and $r.Calls[3] -like '*s3://*/gachacho --content-type*' -and $r.Calls[3] -like '*text/html*') 'page HTML (/gachacho) uploaded with explicit Content-Type before index.html'
+Assert ($r.Calls.Count -ge 5 -and $r.Calls[4] -like '*index.html*') 'index.html is uploaded after assets, static files, legal JSON and page HTML'
+Assert (@($r.Calls | Where-Object { $_ -like 's3 sync*' -and $_ -like '*--exclude gachacho *' }).Count -eq 1) 'static sync excludes the S3 key gachacho so --delete does not remove the page HTML'
 Assert (@($r.Calls | Where-Object { $_ -like 's3 sync*' -and $_ -like '*s3://*/gachacho/legal*' }).Count -eq 0) 'legal JSON is never synced with --delete (only excluded from sync)'
 Assert ($r.Output -match 'Deployment complete!') 'success message shown'
 
@@ -85,7 +87,7 @@ Assert ($r.Output -notmatch 'Deployment complete!') 'no success message'
 Write-Host 'Case 4: invalidation fails' -ForegroundColor Cyan
 $r = Run-Deploy -FailMatch 'create-invalidation'
 Assert ($r.ExitCode -eq 1) "exit code 1 (actual $($r.ExitCode))"
-Assert ($r.Calls.Count -eq 5) "all 5 aws calls attempted (actual $($r.Calls.Count))"
+Assert ($r.Calls.Count -eq 6) "all 6 aws calls attempted (actual $($r.Calls.Count))"
 Assert ($r.Output -notmatch 'Deployment complete!') 'no success message'
 
 Remove-Item -Recurse -Force $Work

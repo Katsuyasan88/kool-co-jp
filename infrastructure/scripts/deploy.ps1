@@ -2,7 +2,7 @@
 #
 # 方針:
 #   - 各ステップ（build / AWS CLI）は失敗したら即時停止し、以降の処理と成功表示へ進まない
-#   - 配布順は「ハッシュ付き assets → 画像等の一般ファイル → 法務JSON → index.html（切替点）→ Invalidation」
+#   - 配布順は「ハッシュ付き assets → 画像等の一般ファイル → 法務JSON → ページ別HTML → index.html（切替点）→ Invalidation」
 #     公開中の index.html が未配置の chunk や JSON を参照する時間をつくらない
 #   - S3 の gachacho/legal/versions/* は削除しない（旧版JSONは rollback・履歴のため残す）
 #
@@ -42,9 +42,10 @@ Invoke-Step 'Sync assets' {
     aws s3 sync "$Dist/assets" "s3://$Bucket/assets" --delete --cache-control "max-age=31536000, immutable"
 }
 
-# 3. その他のファイル (画像・sitemap 等。短〜中期間キャッシュ)。index.html と法務JSONは除外
+# 3. その他のファイル (画像・sitemap 等。短〜中期間キャッシュ)。index.html・法務JSON・ページ別HTML（dist/pages と S3 キー gachacho）は除外
+#    キー gachacho は dist に同名ファイルが無いため、除外しないと --delete で消える
 Invoke-Step 'Sync static files' {
-    aws s3 sync "$Dist/" "s3://$Bucket" --exclude "assets/*" --exclude "index.html" --exclude "gachacho/legal/*" --delete --cache-control "max-age=86400"
+    aws s3 sync "$Dist/" "s3://$Bucket" --exclude "assets/*" --exclude "index.html" --exclude "gachacho/legal/*" --exclude "pages/*" --exclude "gachacho" --delete --cache-control "max-age=86400"
 }
 
 # 4. ガチャちょう法務JSON (アプリが Content-Type に json を含む応答だけを受理するため明示する。旧版JSONは削除しない)
@@ -52,12 +53,17 @@ Invoke-Step 'Upload legal JSON' {
     aws s3 cp "$Dist/gachacho/legal" "s3://$Bucket/gachacho/legal" --recursive --content-type "application/json; charset=utf-8" --cache-control "max-age=3600"
 }
 
-# 5. index.html (切替点。キャッシュなし - 常に最新を確認)
+# 5. ページ別 HTML (OGP 用。scripts/generate-page-html.mjs が生成)。/gachacho は S3 のキー gachacho をそのまま返す
+Invoke-Step 'Upload page HTML' {
+    aws s3 cp "$Dist/pages/gachacho.html" "s3://$Bucket/gachacho" --content-type "text/html; charset=utf-8" --cache-control "no-cache, no-store, must-revalidate"
+}
+
+# 6. index.html (切替点。キャッシュなし - 常に最新を確認)
 Invoke-Step 'Upload index.html' {
     aws s3 cp "$Dist/index.html" "s3://$Bucket/index.html" --cache-control "no-cache, no-store, must-revalidate"
 }
 
-# 6. CloudFrontキャッシュ無効化
+# 7. CloudFrontキャッシュ無効化
 Invoke-Step 'Invalidate CloudFront' {
     aws cloudfront create-invalidation --distribution-id $DistributionId --paths "/*"
 }

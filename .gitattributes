@@ -1,0 +1,2 @@
+# 法務JSONは CapCole 側の生成物とバイト単位で一致させるため、autocrlf 環境でも LF のまま checkout する
+public/gachacho/legal/**/*.json text eol=lf
